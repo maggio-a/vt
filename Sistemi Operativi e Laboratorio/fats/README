@@ -1,0 +1,95 @@
+
+FATS - File system semplificato basato su FAT32
+===============================================
+
+Progetto del corso di Sistemi Operativi e Laboratorio
+Informatica Applicata - Universita' di Pisa
+2013
+
+Autore: Andrea Maggiordomo, MAT. 445942 - mggndr89@gmail.com
+
+COMPILAZIONE DEL SISTEMA
+========================
+
+Il sistema si compila dalla root directory del progetto utilizzando l'utility
+make. I target del Makefile rilevanti ai fini della compilazione del sistema
+sono
+
+  all     compila il sistema
+  build   compila il sistema, pulisce la cartella (elimina file oggetto etc..)
+  test    esegue alcuni semplici test di funzionamento del sistema e riporta
+          l'esito sul terminale
+  clean   elimina i file generati dalla compilazione/test del sistema
+
+L'invocazione del comando 'make build' nella cartella del progetto genera gli
+eseguibili
+  fats_create  formattazione di un file system
+  fats_server  server fats
+  fats_client  client fats
+
+Quando viene lanciato, il server crea il socket di connessione nella cartella
+locale tmp.
+
+IL CLIENT FATS
+==============
+
+I comandi del client vengono invocati esclusivamente su percorsi assoluti. La
+sintassi dei comandi e' la seguente
+
+  mkdir dir
+    Crea la cartella dir, se alcuni elementi intermedi del percorso non esistono
+    l'operazione fallisce
+
+  mkfile file
+    Crea il file file, se alcuni elementi intermedi del percorso non esistono
+    l'operazione fallisce
+
+  ls dir
+    Elenca il contenuto della cartella dir
+
+  append file "string"
+    Aggiunge in coda al file file il contenuto di string, escludendo gli apici
+    che la delimitano
+
+  fread file offset len
+    Legge len caratteri di file a partire da offset e li stampa a video
+
+  cp source dest
+    Crea il file dest e vi copia per intero il contenuto di source
+
+  quit
+    Interrompe la conversazione con il server ed esce dal programma
+
+In caso di fallimento di un'operazione viene stampato sullo schermo un messaggio
+che descrive l'errore notificato dal server.
+
+TEST DEL SISTEMA
+================
+
+Il test del sistema e' effettuato invocando il comando make test e consiste
+nell'esecuzione di alcune operazioni dimostrative, e nel confronto delle
+risposte del server con quelle attese. I file usati dai test sono contenuti
+nella cartella test: i comandi sono letti dai file test*.input, e le risposte
+del server sono confrontate con i risultati salvati nei file test*.ok .
+Il target test del Makefile invoca quattro target (test1, test2, test3, test4)
+il cui compito e' quello di testare il funzionamento del sistema con file system
+che usano ogni dimensione di blocchi ammessa. I test consistono ciascuno
+nell'esecuzione di uno script shell che crea un file system, attiva un server
+fats, invoca le operazioni di prova salvando le risposte del server in
+test/test*.output per ogni run test/test*.input, confronta queste con i
+risultati attesi, notifica l'esito dei test all'utente e termina il server fats.
+
+I run di prova simulano una semplice sessione:
+
+  - test1x.input  verificano che le cartelle e i file vengano creati e listati
+                  correttamente
+  - test2x.input  verificano la correttezza delle operazioni di scrittura e di
+                  lettura
+  - test3x.input  verificano la correttezza delle operazioni di copia
+
+
+La creazione di cartelle genera una directory table con dimensione maggiore di
+un singolo blocco; la scrittura e la copia interessano files con un'estensione
+di due blocchi. Nei test viene utilizzata una versione del client che attende 2
+secondi dopo la ricezione del comando quit per assicurarsi di ricevere le
+risposte dal server prima di chiudere la comunicazione.

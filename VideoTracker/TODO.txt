@@ -1,0 +1,45 @@
+SOCKETS
+
+  - return socket objects through a factory function/class (and decompose
+    socket objects in interface + implementation)
+
+  - implement proper exceptions to wrap the berkeley sockets API error codes
+
+TRACKING (LOCAL)
+
+  - implement the calibration step to compute an omography between the image
+    plane and the ground plane by either:
+      * detecting control points lying on the ground plan
+      * performing 3d calibration tusing OpenCV facilities (easier)
+
+  - implement the adaptive processing while tracking objects
+      * use a kalman filter to guess the position of the various moving objects
+      * process only a "window" of the image where the objects may be (ROI)
+
+  - convert the coordinates of the identified objects from image space to world
+    space [4]
+      * cv::getPerspectiveTransform() [2] [3]
+      * camera calibation (see above) to get an undistorted estimate
+
+TRACKING (GLOBAL)
+
+  - implement data aggregation and error correction to obtain a good estimation
+    of the object positions (adaption from [1])
+
+NETWORKING
+
+  - implement the client driver properly (has to control more than 1 interface)
+
+REFERENCES
+
+ [1] Song, Bi, et al. "Tracking and activity recognition through consensus in
+ distributed camera networks." Image Processing, IEEE Transactions on 19.10
+ (2010): 2564-2579.
+
+ [2] Heckbert, Paul S. Fundamentals of texture mapping and image warping.
+     MS thesis. University of California, Berkeley, 1989.
+
+ [3] Eberly, D. "Perspective mappings" Geometric tools library documentation
+     (2011) http://www.geometrictools.com/Documentation/PerspectiveMappings.pdf
+
+ [4] http://math.stackexchange.com/questions/185708/problem-in-deducing-perspective-projection-matrix

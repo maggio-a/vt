@@ -1,0 +1,18 @@
+#IncludeRegexLine: ^[ 	]*#[ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/home/andrea/Documents/Projects/OpenCVTest/main.cpp
+stdio.h
+-
+time.h
+-
+opencv2/opencv.hpp
+-
+raspicam/raspicam_cv.h
+-
+

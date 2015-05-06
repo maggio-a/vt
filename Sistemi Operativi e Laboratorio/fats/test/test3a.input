@@ -1,0 +1,5 @@
+cp /f1 /dir1/sd1/f3
+fread /dir1/sd1/f3 0 9
+fread /dir1/sd1/f3 126 9
+fread /dir1/sd1/f3 247 9
+quit
