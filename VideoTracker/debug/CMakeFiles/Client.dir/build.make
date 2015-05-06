@@ -35,10 +35,10 @@ RM = /usr/bin/cmake -E remove -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /home/andrea/Documents/Projects/VideoTracker
+CMAKE_SOURCE_DIR = /home/andrea/Documents/RHS1415/VideoTracker
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /home/andrea/Documents/Projects/VideoTracker/debug
+CMAKE_BINARY_DIR = /home/andrea/Documents/RHS1415/VideoTracker/debug
 
 # Include any dependencies generated for this target.
 include CMakeFiles/Client.dir/depend.make
@@ -51,17 +51,17 @@ include CMakeFiles/Client.dir/flags.make
 
 CMakeFiles/Client.dir/client.cpp.o: CMakeFiles/Client.dir/flags.make
 CMakeFiles/Client.dir/client.cpp.o: ../client.cpp
-	$(CMAKE_COMMAND) -E cmake_progress_report /home/andrea/Documents/Projects/VideoTracker/debug/CMakeFiles $(CMAKE_PROGRESS_1)
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/andrea/Documents/RHS1415/VideoTracker/debug/CMakeFiles $(CMAKE_PROGRESS_1)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Building CXX object CMakeFiles/Client.dir/client.cpp.o"
-	/usr/bin/c++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/Client.dir/client.cpp.o -c /home/andrea/Documents/Projects/VideoTracker/client.cpp
+	/usr/bin/c++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/Client.dir/client.cpp.o -c /home/andrea/Documents/RHS1415/VideoTracker/client.cpp
 
 CMakeFiles/Client.dir/client.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/Client.dir/client.cpp.i"
-	/usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -E /home/andrea/Documents/Projects/VideoTracker/client.cpp > CMakeFiles/Client.dir/client.cpp.i
+	/usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -E /home/andrea/Documents/RHS1415/VideoTracker/client.cpp > CMakeFiles/Client.dir/client.cpp.i
 
 CMakeFiles/Client.dir/client.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/Client.dir/client.cpp.s"
-	/usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -S /home/andrea/Documents/Projects/VideoTracker/client.cpp -o CMakeFiles/Client.dir/client.cpp.s
+	/usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -S /home/andrea/Documents/RHS1415/VideoTracker/client.cpp -o CMakeFiles/Client.dir/client.cpp.s
 
 CMakeFiles/Client.dir/client.cpp.o.requires:
 .PHONY : CMakeFiles/Client.dir/client.cpp.o.requires
@@ -97,6 +97,6 @@ CMakeFiles/Client.dir/clean:
 .PHONY : CMakeFiles/Client.dir/clean
 
 CMakeFiles/Client.dir/depend:
-	cd /home/andrea/Documents/Projects/VideoTracker/debug && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/andrea/Documents/Projects/VideoTracker /home/andrea/Documents/Projects/VideoTracker /home/andrea/Documents/Projects/VideoTracker/debug /home/andrea/Documents/Projects/VideoTracker/debug /home/andrea/Documents/Projects/VideoTracker/debug/CMakeFiles/Client.dir/DependInfo.cmake --color=$(COLOR)
+	cd /home/andrea/Documents/RHS1415/VideoTracker/debug && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/andrea/Documents/RHS1415/VideoTracker /home/andrea/Documents/RHS1415/VideoTracker /home/andrea/Documents/RHS1415/VideoTracker/debug /home/andrea/Documents/RHS1415/VideoTracker/debug /home/andrea/Documents/RHS1415/VideoTracker/debug/CMakeFiles/Client.dir/DependInfo.cmake --color=$(COLOR)
 .PHONY : CMakeFiles/Client.dir/depend
 

@@ -10,6 +10,9 @@
 
 #endif
 
+#include "ColorBasedDetector.hpp"
+#include "MovingObject.hpp"
+
 extern bool tracking;
 
 using std::cout;
@@ -25,10 +28,8 @@ static int S_MAX = 195;
 static int V_MIN = 143;
 static int V_MAX = 256;
 
-static const int FRAME_WIDTH = 640;
-static const int FRAME_HEIGHT = 480;
-
-static const int MAX_NUM_OBJECTS = 50;
+static const int FRAME_WIDTH = 1280;
+static const int FRAME_HEIGHT = 720;
 
 //const int MIN_OBJECT_AREA = 20*20;
 //const int MAX_OBJECT_AREA = FRAME_HEIGHT*FRAME_WIDTH/1.5;
@@ -39,24 +40,12 @@ static const string windowName2 = "Thresholded Image";
 static const string windowName3 = "After Morphological Operations";
 static const string trackbarWindowName = "Trackbars";
 
-static void on_trackbar(int, void*) { }
-
-static void createTrackbars() {
-    cv::namedWindow(trackbarWindowName, 0);   
-    cv::createTrackbar("H_MIN", trackbarWindowName, &H_MIN, H_MAX, on_trackbar);
-    cv::createTrackbar("H_MAX", trackbarWindowName, &H_MAX, H_MAX, on_trackbar);
-    cv::createTrackbar("S_MIN", trackbarWindowName, &S_MIN, S_MAX, on_trackbar);
-    cv::createTrackbar("S_MAX", trackbarWindowName, &S_MAX, S_MAX, on_trackbar);
-    cv::createTrackbar("V_MIN", trackbarWindowName, &V_MIN, V_MAX, on_trackbar);
-    cv::createTrackbar("V_MAX", trackbarWindowName, &V_MAX, V_MAX, on_trackbar);
-}
-
 /* Assumes t2 > t1 */
-static double getTimeDelta(const struct timespec &t2, const struct timespec &t1) {
+static inline double getTimeDelta(const struct timespec &t2, const struct timespec &t1) {
     return ((t2.tv_sec*1000.0 + t2.tv_nsec/1000000.0) - (t1.tv_sec*1000.0 + t1.tv_nsec/1000000.0)) / 1000.0;
 }
 
-void *tracker(void *arg) {
+void *tracker2(void *arg) {
 
 #ifdef __arm__
     raspicam::RaspiCam_Cv cam;
@@ -73,33 +62,30 @@ void *tracker(void *arg) {
     //cout << cam.get(CV_CAP_PROP_AUTO_EXPOSURE) << " " << cam.get(CV_CAP_PROP_EXPOSURE) << " **\n";
 #endif
 
-    cv::Mat image, HSV, stencil, tmp;
+    cv::Mat image;
 
     if (!cam.isOpened()) {
         cerr << "Failed to open the camera" << endl;
         return 0;
     }
 
-    //createTrackbars();
-
-    std::vector< std::vector<cv::Point> > cnt;
-    //std::vector<cv::Vec4i> hierarchy;
+    std::vector< std::vector<cv::Point> > contours;
 
     int key_code;
 
     struct timespec t_prev, t_curr;
 
-    /* kalman filter section */
-    /* state will be [ pos_x, pos_y, speed_x, speed_y ]
-       measurement will be [ pos_x, pos_y ]
-       no control */
-    cv::KalmanFilter kalman(4, 2, 0, CV_32F);
-
     cv::Mat measurement(2, 1, CV_32F);
 
     clock_gettime(CLOCK_MONOTONIC, &t_prev);
 
-    bool found = false, kalman_initialized = false;
+    // First detection to initialize the control structures
+    cam.read(image);
+    ColorBasedDetector detector(cv::Scalar(H_MIN,S_MIN,V_MIN), cv::Scalar(H_MAX,S_MAX,V_MAX));
+    detector.detectObjects(image, contours);
+    // For each object set up a kalman filter
+    std::vector<MovingObject> objects(contours.size());
+    
 
     while (tracking) {
         // Grab a frame

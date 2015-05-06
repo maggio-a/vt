@@ -35,10 +35,10 @@ RM = /usr/bin/cmake -E remove -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /home/andrea/Documents/Projects/VideoTracker
+CMAKE_SOURCE_DIR = /home/andrea/Documents/RHS1415/VideoTracker
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /home/andrea/Documents/Projects/VideoTracker/debug
+CMAKE_BINARY_DIR = /home/andrea/Documents/RHS1415/VideoTracker/debug
 
 # Include any dependencies generated for this target.
 include CMakeFiles/CameraServer.dir/depend.make
@@ -51,17 +51,17 @@ include CMakeFiles/CameraServer.dir/flags.make
 
 CMakeFiles/CameraServer.dir/server.cpp.o: CMakeFiles/CameraServer.dir/flags.make
 CMakeFiles/CameraServer.dir/server.cpp.o: ../server.cpp
-	$(CMAKE_COMMAND) -E cmake_progress_report /home/andrea/Documents/Projects/VideoTracker/debug/CMakeFiles $(CMAKE_PROGRESS_1)
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/andrea/Documents/RHS1415/VideoTracker/debug/CMakeFiles $(CMAKE_PROGRESS_1)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Building CXX object CMakeFiles/CameraServer.dir/server.cpp.o"
-	/usr/bin/c++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/CameraServer.dir/server.cpp.o -c /home/andrea/Documents/Projects/VideoTracker/server.cpp
+	/usr/bin/c++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/CameraServer.dir/server.cpp.o -c /home/andrea/Documents/RHS1415/VideoTracker/server.cpp
 
 CMakeFiles/CameraServer.dir/server.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/CameraServer.dir/server.cpp.i"
-	/usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -E /home/andrea/Documents/Projects/VideoTracker/server.cpp > CMakeFiles/CameraServer.dir/server.cpp.i
+	/usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -E /home/andrea/Documents/RHS1415/VideoTracker/server.cpp > CMakeFiles/CameraServer.dir/server.cpp.i
 
 CMakeFiles/CameraServer.dir/server.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/CameraServer.dir/server.cpp.s"
-	/usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -S /home/andrea/Documents/Projects/VideoTracker/server.cpp -o CMakeFiles/CameraServer.dir/server.cpp.s
+	/usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -S /home/andrea/Documents/RHS1415/VideoTracker/server.cpp -o CMakeFiles/CameraServer.dir/server.cpp.s
 
 CMakeFiles/CameraServer.dir/server.cpp.o.requires:
 .PHONY : CMakeFiles/CameraServer.dir/server.cpp.o.requires
@@ -74,17 +74,17 @@ CMakeFiles/CameraServer.dir/server.cpp.o.provides.build: CMakeFiles/CameraServer
 
 CMakeFiles/CameraServer.dir/tracker.cpp.o: CMakeFiles/CameraServer.dir/flags.make
 CMakeFiles/CameraServer.dir/tracker.cpp.o: ../tracker.cpp
-	$(CMAKE_COMMAND) -E cmake_progress_report /home/andrea/Documents/Projects/VideoTracker/debug/CMakeFiles $(CMAKE_PROGRESS_2)
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/andrea/Documents/RHS1415/VideoTracker/debug/CMakeFiles $(CMAKE_PROGRESS_2)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Building CXX object CMakeFiles/CameraServer.dir/tracker.cpp.o"
-	/usr/bin/c++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/CameraServer.dir/tracker.cpp.o -c /home/andrea/Documents/Projects/VideoTracker/tracker.cpp
+	/usr/bin/c++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/CameraServer.dir/tracker.cpp.o -c /home/andrea/Documents/RHS1415/VideoTracker/tracker.cpp
 
 CMakeFiles/CameraServer.dir/tracker.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/CameraServer.dir/tracker.cpp.i"
-	/usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -E /home/andrea/Documents/Projects/VideoTracker/tracker.cpp > CMakeFiles/CameraServer.dir/tracker.cpp.i
+	/usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -E /home/andrea/Documents/RHS1415/VideoTracker/tracker.cpp > CMakeFiles/CameraServer.dir/tracker.cpp.i
 
 CMakeFiles/CameraServer.dir/tracker.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/CameraServer.dir/tracker.cpp.s"
-	/usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -S /home/andrea/Documents/Projects/VideoTracker/tracker.cpp -o CMakeFiles/CameraServer.dir/tracker.cpp.s
+	/usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -S /home/andrea/Documents/RHS1415/VideoTracker/tracker.cpp -o CMakeFiles/CameraServer.dir/tracker.cpp.s
 
 CMakeFiles/CameraServer.dir/tracker.cpp.o.requires:
 .PHONY : CMakeFiles/CameraServer.dir/tracker.cpp.o.requires
@@ -156,6 +156,6 @@ CMakeFiles/CameraServer.dir/clean:
 .PHONY : CMakeFiles/CameraServer.dir/clean
 
 CMakeFiles/CameraServer.dir/depend:
-	cd /home/andrea/Documents/Projects/VideoTracker/debug && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/andrea/Documents/Projects/VideoTracker /home/andrea/Documents/Projects/VideoTracker /home/andrea/Documents/Projects/VideoTracker/debug /home/andrea/Documents/Projects/VideoTracker/debug /home/andrea/Documents/Projects/VideoTracker/debug/CMakeFiles/CameraServer.dir/DependInfo.cmake --color=$(COLOR)
+	cd /home/andrea/Documents/RHS1415/VideoTracker/debug && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/andrea/Documents/RHS1415/VideoTracker /home/andrea/Documents/RHS1415/VideoTracker /home/andrea/Documents/RHS1415/VideoTracker/debug /home/andrea/Documents/RHS1415/VideoTracker/debug /home/andrea/Documents/RHS1415/VideoTracker/debug/CMakeFiles/CameraServer.dir/DependInfo.cmake --color=$(COLOR)
 .PHONY : CMakeFiles/CameraServer.dir/depend
 

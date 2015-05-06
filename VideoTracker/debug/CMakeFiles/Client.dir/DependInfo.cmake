@@ -4,7 +4,7 @@ SET(CMAKE_DEPENDS_LANGUAGES
   )
 # The set of files for implicit dependencies of each language:
 SET(CMAKE_DEPENDS_CHECK_CXX
-  "/home/andrea/Documents/Projects/VideoTracker/client.cpp" "/home/andrea/Documents/Projects/VideoTracker/debug/CMakeFiles/Client.dir/client.cpp.o"
+  "/home/andrea/Documents/RHS1415/VideoTracker/client.cpp" "/home/andrea/Documents/RHS1415/VideoTracker/debug/CMakeFiles/Client.dir/client.cpp.o"
   )
 SET(CMAKE_CXX_COMPILER_ID "GNU")
 
