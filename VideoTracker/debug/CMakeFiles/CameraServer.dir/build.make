@@ -95,16 +95,41 @@ CMakeFiles/CameraServer.dir/tracker.cpp.o.provides: CMakeFiles/CameraServer.dir/
 
 CMakeFiles/CameraServer.dir/tracker.cpp.o.provides.build: CMakeFiles/CameraServer.dir/tracker.cpp.o
 
+CMakeFiles/CameraServer.dir/tracker2.cpp.o: CMakeFiles/CameraServer.dir/flags.make
+CMakeFiles/CameraServer.dir/tracker2.cpp.o: ../tracker2.cpp
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/andrea/Documents/RHS1415/VideoTracker/debug/CMakeFiles $(CMAKE_PROGRESS_3)
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Building CXX object CMakeFiles/CameraServer.dir/tracker2.cpp.o"
+	/usr/bin/c++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/CameraServer.dir/tracker2.cpp.o -c /home/andrea/Documents/RHS1415/VideoTracker/tracker2.cpp
+
+CMakeFiles/CameraServer.dir/tracker2.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/CameraServer.dir/tracker2.cpp.i"
+	/usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -E /home/andrea/Documents/RHS1415/VideoTracker/tracker2.cpp > CMakeFiles/CameraServer.dir/tracker2.cpp.i
+
+CMakeFiles/CameraServer.dir/tracker2.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/CameraServer.dir/tracker2.cpp.s"
+	/usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -S /home/andrea/Documents/RHS1415/VideoTracker/tracker2.cpp -o CMakeFiles/CameraServer.dir/tracker2.cpp.s
+
+CMakeFiles/CameraServer.dir/tracker2.cpp.o.requires:
+.PHONY : CMakeFiles/CameraServer.dir/tracker2.cpp.o.requires
+
+CMakeFiles/CameraServer.dir/tracker2.cpp.o.provides: CMakeFiles/CameraServer.dir/tracker2.cpp.o.requires
+	$(MAKE) -f CMakeFiles/CameraServer.dir/build.make CMakeFiles/CameraServer.dir/tracker2.cpp.o.provides.build
+.PHONY : CMakeFiles/CameraServer.dir/tracker2.cpp.o.provides
+
+CMakeFiles/CameraServer.dir/tracker2.cpp.o.provides.build: CMakeFiles/CameraServer.dir/tracker2.cpp.o
+
 # Object files for target CameraServer
 CameraServer_OBJECTS = \
 "CMakeFiles/CameraServer.dir/server.cpp.o" \
-"CMakeFiles/CameraServer.dir/tracker.cpp.o"
+"CMakeFiles/CameraServer.dir/tracker.cpp.o" \
+"CMakeFiles/CameraServer.dir/tracker2.cpp.o"
 
 # External object files for target CameraServer
 CameraServer_EXTERNAL_OBJECTS =
 
 CameraServer: CMakeFiles/CameraServer.dir/server.cpp.o
 CameraServer: CMakeFiles/CameraServer.dir/tracker.cpp.o
+CameraServer: CMakeFiles/CameraServer.dir/tracker2.cpp.o
 CameraServer: CMakeFiles/CameraServer.dir/build.make
 CameraServer: /usr/local/lib/libopencv_videostab.so.2.4.11
 CameraServer: /usr/local/lib/libopencv_video.so.2.4.11
@@ -149,6 +174,7 @@ CMakeFiles/CameraServer.dir/build: CameraServer
 
 CMakeFiles/CameraServer.dir/requires: CMakeFiles/CameraServer.dir/server.cpp.o.requires
 CMakeFiles/CameraServer.dir/requires: CMakeFiles/CameraServer.dir/tracker.cpp.o.requires
+CMakeFiles/CameraServer.dir/requires: CMakeFiles/CameraServer.dir/tracker2.cpp.o.requires
 .PHONY : CMakeFiles/CameraServer.dir/requires
 
 CMakeFiles/CameraServer.dir/clean:

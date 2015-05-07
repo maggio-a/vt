@@ -59,7 +59,7 @@ CMAKE_BINARY_DIR = /home/andrea/Documents/RHS1415/VideoTracker/debug
 CMakeFiles/CameraServer.dir/all:
 	$(MAKE) -f CMakeFiles/CameraServer.dir/build.make CMakeFiles/CameraServer.dir/depend
 	$(MAKE) -f CMakeFiles/CameraServer.dir/build.make CMakeFiles/CameraServer.dir/build
-	$(CMAKE_COMMAND) -E cmake_progress_report /home/andrea/Documents/RHS1415/VideoTracker/debug/CMakeFiles  1 2
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/andrea/Documents/RHS1415/VideoTracker/debug/CMakeFiles  1 2 3
 	@echo "Built target CameraServer"
 .PHONY : CMakeFiles/CameraServer.dir/all
 
@@ -69,7 +69,7 @@ all: CMakeFiles/CameraServer.dir/all
 
 # Build rule for subdir invocation for target.
 CMakeFiles/CameraServer.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/andrea/Documents/RHS1415/VideoTracker/debug/CMakeFiles 2
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/andrea/Documents/RHS1415/VideoTracker/debug/CMakeFiles 3
 	$(MAKE) -f CMakeFiles/Makefile2 CMakeFiles/CameraServer.dir/all
 	$(CMAKE_COMMAND) -E cmake_progress_start /home/andrea/Documents/RHS1415/VideoTracker/debug/CMakeFiles 0
 .PHONY : CMakeFiles/CameraServer.dir/rule
@@ -94,7 +94,7 @@ clean: CMakeFiles/CameraServer.dir/clean
 CMakeFiles/Client.dir/all:
 	$(MAKE) -f CMakeFiles/Client.dir/build.make CMakeFiles/Client.dir/depend
 	$(MAKE) -f CMakeFiles/Client.dir/build.make CMakeFiles/Client.dir/build
-	$(CMAKE_COMMAND) -E cmake_progress_report /home/andrea/Documents/RHS1415/VideoTracker/debug/CMakeFiles  3
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/andrea/Documents/RHS1415/VideoTracker/debug/CMakeFiles  4
 	@echo "Built target Client"
 .PHONY : CMakeFiles/Client.dir/all
 

@@ -2,22 +2,22 @@
 
 #include <opencv2/opencv.hpp>
 
-using cv::kalman;
+using cv::KalmanFilter;
 
 class MovingObject {
 public:
-    MovingObject(string tag, float x, float y);
+    MovingObject(std::string tag, float x, float y);
     ~MovingObject();
 
-    cv::Point2i predictPosition();
+    cv::Point2i predictPosition(float dt);
     void feedback(const cv::Mat &measurement);
 
 private:
     cv::KalmanFilter _kf;
-    string _tag;
+    std::string _tag;
 };
 
-MovingObject::MovingObject(string tag)
+MovingObject::MovingObject(std::string tag, float x, float y)
         : _kf(4, 2, 0, CV_32F), _tag(tag) {
 
     /* transition matrix will be updated at each step:
@@ -44,13 +44,14 @@ MovingObject::~MovingObject() {
 
 }
 
-cv::Point2i predictPosition(float dt) {
+cv::Point2i MovingObject::predictPosition(float dt) {
     _kf.transitionMatrix.at<float>(1,3) = dt;
     _kf.transitionMatrix.at<float>(0,2) = dt;
-    cv::Mat &prediction = _kf.predict();
+    const cv::Mat &prediction = _kf.predict();
     return cv::Point2i(prediction.at<float>(0), prediction.at<float>(1));
 }
 
-void feedback(const cv::Mat &measurement) {
-    _kf.update(measurement);
+void MovingObject::feedback(const cv::Mat &measurement) {
+    _kf.correct(measurement);
+    std::cout << "FIXME keep track of time from last measurement here";
 }

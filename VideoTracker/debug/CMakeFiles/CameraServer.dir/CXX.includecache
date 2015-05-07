@@ -6,7 +6,19 @@
 
 #IncludeRegexTransform: 
 
-/home/andrea/Documents/RHS1415/VideoTracker/tracker.cpp
+/home/andrea/Documents/RHS1415/VideoTracker/ColorBasedDetector.hpp
+vector
+-
+opencv2/opencv.hpp
+-
+
+/home/andrea/Documents/RHS1415/VideoTracker/MovingObject.hpp
+string
+-
+opencv2/opencv.hpp
+-
+
+/home/andrea/Documents/RHS1415/VideoTracker/tracker2.cpp
 iostream
 -
 string
@@ -19,6 +31,10 @@ opencv2/opencv.hpp
 -
 raspicam/raspicam_cv.h
 -
+ColorBasedDetector.hpp
+/home/andrea/Documents/RHS1415/VideoTracker/ColorBasedDetector.hpp
+MovingObject.hpp
+/home/andrea/Documents/RHS1415/VideoTracker/MovingObject.hpp
 
 /usr/local/include/opencv2/calib3d/calib3d.hpp
 opencv2/core/core.hpp

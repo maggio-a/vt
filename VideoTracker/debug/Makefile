@@ -196,6 +196,30 @@ tracker.cpp.s:
 	$(MAKE) -f CMakeFiles/CameraServer.dir/build.make CMakeFiles/CameraServer.dir/tracker.cpp.s
 .PHONY : tracker.cpp.s
 
+tracker2.o: tracker2.cpp.o
+.PHONY : tracker2.o
+
+# target to build an object file
+tracker2.cpp.o:
+	$(MAKE) -f CMakeFiles/CameraServer.dir/build.make CMakeFiles/CameraServer.dir/tracker2.cpp.o
+.PHONY : tracker2.cpp.o
+
+tracker2.i: tracker2.cpp.i
+.PHONY : tracker2.i
+
+# target to preprocess a source file
+tracker2.cpp.i:
+	$(MAKE) -f CMakeFiles/CameraServer.dir/build.make CMakeFiles/CameraServer.dir/tracker2.cpp.i
+.PHONY : tracker2.cpp.i
+
+tracker2.s: tracker2.cpp.s
+.PHONY : tracker2.s
+
+# target to generate assembly for a file
+tracker2.cpp.s:
+	$(MAKE) -f CMakeFiles/CameraServer.dir/build.make CMakeFiles/CameraServer.dir/tracker2.cpp.s
+.PHONY : tracker2.cpp.s
+
 # Help Target
 help:
 	@echo "The following are some of the valid targets for this Makefile:"
@@ -215,6 +239,9 @@ help:
 	@echo "... tracker.o"
 	@echo "... tracker.i"
 	@echo "... tracker.s"
+	@echo "... tracker2.o"
+	@echo "... tracker2.i"
+	@echo "... tracker2.s"
 .PHONY : help
 
 

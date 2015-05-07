@@ -6,6 +6,7 @@ SET(CMAKE_DEPENDS_LANGUAGES
 SET(CMAKE_DEPENDS_CHECK_CXX
   "/home/andrea/Documents/RHS1415/VideoTracker/server.cpp" "/home/andrea/Documents/RHS1415/VideoTracker/debug/CMakeFiles/CameraServer.dir/server.cpp.o"
   "/home/andrea/Documents/RHS1415/VideoTracker/tracker.cpp" "/home/andrea/Documents/RHS1415/VideoTracker/debug/CMakeFiles/CameraServer.dir/tracker.cpp.o"
+  "/home/andrea/Documents/RHS1415/VideoTracker/tracker2.cpp" "/home/andrea/Documents/RHS1415/VideoTracker/debug/CMakeFiles/CameraServer.dir/tracker2.cpp.o"
   )
 SET(CMAKE_CXX_COMPILER_ID "GNU")
 
