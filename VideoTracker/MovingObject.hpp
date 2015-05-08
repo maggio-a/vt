@@ -15,14 +15,21 @@ public:
     ~MovingObject();
 
     cv::Point2i predictPosition(float dt);
+<<<<<<< HEAD
     void feedback(const cv::Mat &measurement, const struct timespec &time);
+=======
+    void feedback(const cv::Mat &measurement);
+>>>>>>> 9adfb3360a1a0af01b3801a4f44c513c861255dd
 
 private:
     friend struct outdated;
 
     cv::KalmanFilter _kf;
     std::string _tag;
+<<<<<<< HEAD
     struct timespec _lastDetected;
+=======
+>>>>>>> 9adfb3360a1a0af01b3801a4f44c513c861255dd
 };
 
 MovingObject::MovingObject(std::string tag, float x, float y)
@@ -61,9 +68,15 @@ cv::Point2i MovingObject::predictPosition(float dt) {
     return cv::Point2i(prediction.at<float>(0), prediction.at<float>(1));
 }
 
+<<<<<<< HEAD
 void MovingObject::feedback(const cv::Mat &measurement, const struct timespec &mtime) {
     _kf.correct(measurement);
     _lastDetected = mtime;
+=======
+void MovingObject::feedback(const cv::Mat &measurement) {
+    _kf.correct(measurement);
+    std::cout << "FIXME keep track of time from last measurement here";
+>>>>>>> 9adfb3360a1a0af01b3801a4f44c513c861255dd
 }
 
 // predicate for purging undetected objects

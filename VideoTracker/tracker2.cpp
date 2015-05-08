@@ -41,10 +41,20 @@ static const string windowName3 = "After Morphological Operations";
 static const string trackbarWindowName = "Trackbars";
 
 /* Assumes t2 > t1 */
+<<<<<<< HEAD
 static inline float getTimeDelta(const struct timespec &t2, const struct timespec &t1) {
 	return ((t2.tv_sec*1000.0 + t2.tv_nsec/1000000.0) - (t1.tv_sec*1000.0 + t1.tv_nsec/1000000.0)) / 1000.0;
 }
 
+=======
+static inline double getTimeDelta(const struct timespec &t2, const struct timespec &t1) {
+	return ((t2.tv_sec*1000.0 + t2.tv_nsec/1000000.0) - (t1.tv_sec*1000.0 + t1.tv_nsec/1000000.0)) / 1000.0;
+}
+
+
+
+
+>>>>>>> 9adfb3360a1a0af01b3801a4f44c513c861255dd
 void computeAllMatchings(size_t index,
 	                     size_t n,
 	                     std::set<size_t> &used,
@@ -71,6 +81,10 @@ void computeAllMatchings(size_t index,
 	}
 }
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> 9adfb3360a1a0af01b3801a4f44c513c861255dd
 // computes the best assignment between A=[0..m] and B=[0..n],
 // costs[(i,j)] is the cost of pairing A[i] with B[j]
 std::vector<size_t> bestMatching(size_t m, size_t n, const std::map<std::pair<size_t, size_t>, float> &costs) {
@@ -87,6 +101,11 @@ std::vector<size_t> bestMatching(size_t m, size_t n, const std::map<std::pair<si
 	return bestMatch;
 }
 
+<<<<<<< HEAD
+=======
+
+
+>>>>>>> 9adfb3360a1a0af01b3801a4f44c513c861255dd
 //computes the optimal pairings idx_prediction -> idx_object detected
 std::vector< std::pair<size_t,size_t> > ComputeMatching(const std::vector<cv::Point2i> &predictions,
 		const std::vector<cv::Point2i> &detections) {
@@ -116,6 +135,17 @@ std::vector< std::pair<size_t,size_t> > ComputeMatching(const std::vector<cv::Po
 }
 
 
+<<<<<<< HEAD
+=======
+
+
+
+
+
+
+
+
+>>>>>>> 9adfb3360a1a0af01b3801a4f44c513c861255dd
 void *tracker2(void *arg) {
 
 #ifdef __arm__
@@ -133,16 +163,31 @@ void *tracker2(void *arg) {
 	//cout << cam.get(CV_CAP_PROP_AUTO_EXPOSURE) << " " << cam.get(CV_CAP_PROP_EXPOSURE) << " **\n";
 #endif
 
+<<<<<<< HEAD
+=======
+	cv::Mat image;
+
+>>>>>>> 9adfb3360a1a0af01b3801a4f44c513c861255dd
 	if (!cam.isOpened()) {
 		cerr << "Failed to open the camera" << endl;
 		return 0;
 	}
 
+<<<<<<< HEAD
 	cv::Mat image;
 	std::vector< std::vector<cv::Point> > contours;
 	int key_code;
 	struct timespec t_prev, t_curr;
 
+=======
+	std::vector< std::vector<cv::Point> > contours;
+
+	int key_code;
+
+	struct timespec t_prev, t_curr;
+
+
+>>>>>>> 9adfb3360a1a0af01b3801a4f44c513c861255dd
 	clock_gettime(CLOCK_MONOTONIC, &t_prev);
 
 	// First detection to initialize the control structures
@@ -192,7 +237,11 @@ void *tracker2(void *arg) {
 			measurement.at<float>(0) = match.x;
 			measurement.at<float>(1) = match.y;
 			used.push_back(match);
+<<<<<<< HEAD
 			tracker.feedback(measurement, t_curr);
+=======
+			tracker.feedback(measurement);
+>>>>>>> 9adfb3360a1a0af01b3801a4f44c513c861255dd
 		}
 		//remove used detections (if any)
 		for (size_t i = 0; i < used.size(); ++i) {
@@ -216,7 +265,10 @@ void *tracker2(void *arg) {
 		cv::imshow(windowName, image);
 
 		// TODO if trackers lost their object for more than a given threshold, remove them
+<<<<<<< HEAD
 		objects.erase(std::remove_if(objects.begin(), objects.end(), outdated(t_curr, 2.0f)), objects.end());
+=======
+>>>>>>> 9adfb3360a1a0af01b3801a4f44c513c861255dd
 
 		key_code = cv::waitKey(1);
 		if (key_code == 32 || (key_code & 0xff) == 32 ) {
@@ -231,4 +283,30 @@ void *tracker2(void *arg) {
 
 	return 0;
 }
+<<<<<<< HEAD
 
+=======
+/*
+std::vector< std::pair<size_t,size_t> > _ComputeMatching(
+		const std::vector<cv::Point2i> &predictions,
+		const std::vector<std::vector< cv::Point2i> > &detectedContours) {
+	size_t n1 = mo.size(), n2 = cntrs.size();
+	assert(n1 > 0 && n2 > 0);
+	std::vector< std::pair<size_t,size_t> > pairs;
+	for(size_t i = 0; i < n1; ++i) {
+		for (size_t j = 0; j < n2; ++j) {
+			pairs.push_back(make_pair(i,j));
+		}
+	}
+	cout << "FIXME FIXME FIXME puo prendere piu volte lo stesso elemento di un array";
+	// lo implemento ricorsivo e fu
+	size_t nmatches = std::max(n1, n2);
+	std::vector< std::pair<size_t,size_t> > matching(nmatches);
+	std::vector<bool> selected(pairs.size(), false);
+	fill_n(selected, nmatches, true);
+	float cost = numeric_limits<float>::max();
+	do {
+		//compute cost and save the best found
+	} while (next_premutation(pairs.begin(), pairs.end()));
+}*/
+>>>>>>> 9adfb3360a1a0af01b3801a4f44c513c861255dd

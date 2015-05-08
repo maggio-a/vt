@@ -1,2 +1,0 @@
-/home/andrea/Desktop/Projects/RHS1415/VideoTracker/debug/CMakeFiles/CameraServer.dir
-/home/andrea/Desktop/Projects/RHS1415/VideoTracker/debug/CMakeFiles/Client.dir
