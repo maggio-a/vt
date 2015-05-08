@@ -11,6 +11,7 @@ using std::cerr;
 using std::endl;
 
 extern void *tracker(void *arg);
+extern void *tracker2(void *arg);
 
 bool tracking = false;
 

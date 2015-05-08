@@ -41,145 +41,194 @@ static const string windowName3 = "After Morphological Operations";
 static const string trackbarWindowName = "Trackbars";
 
 /* Assumes t2 > t1 */
-static inline double getTimeDelta(const struct timespec &t2, const struct timespec &t1) {
-    return ((t2.tv_sec*1000.0 + t2.tv_nsec/1000000.0) - (t1.tv_sec*1000.0 + t1.tv_nsec/1000000.0)) / 1000.0;
+static inline float getTimeDelta(const struct timespec &t2, const struct timespec &t1) {
+	return ((t2.tv_sec*1000.0 + t2.tv_nsec/1000000.0) - (t1.tv_sec*1000.0 + t1.tv_nsec/1000000.0)) / 1000.0;
 }
+
+void computeAllMatchings(size_t index,
+	                     size_t n,
+	                     std::set<size_t> &used,
+	                     std::vector<size_t> &tmp,
+	                     float currentCost,
+	                     std::vector<size_t> &bestMatch,
+	                     const std::map<std::pair<size_t, size_t>, float> &costs,
+		                 float &bestCost) {
+	assert(index <= n);
+	if (currentCost >= bestCost) {
+		return;
+	} else if (index == tmp.size()) {
+		bestMatch = tmp;
+		bestCost = currentCost;
+	} else {
+		for (size_t i = 0; i < n; ++i) {
+			if (used.find(i) == used.end()) {
+				tmp[index] = i;
+				used.insert(i);
+				currentCost += (costs.find(std::make_pair(index, i)))->second;
+				computeAllMatchings(index+1, n, used, tmp, currentCost, bestMatch, costs, bestCost);
+			}
+		}
+	}
+}
+
+// computes the best assignment between A=[0..m] and B=[0..n],
+// costs[(i,j)] is the cost of pairing A[i] with B[j]
+std::vector<size_t> bestMatching(size_t m, size_t n, const std::map<std::pair<size_t, size_t>, float> &costs) {
+	assert(m <= n);
+	std::vector<size_t> bestMatch;
+	float bestCost = std::numeric_limits<float>::max();
+	for (size_t i = 0; i < n; ++i) {
+		std::vector<size_t> tmp(m);
+		std::set<size_t> used;
+		tmp[0] = i;
+		used.insert(i);
+		computeAllMatchings(1, n, used, tmp, (costs.find(std::make_pair(0u,i)))->second, bestMatch, costs, bestCost);
+	}
+	return bestMatch;
+}
+
+//computes the optimal pairings idx_prediction -> idx_object detected
+std::vector< std::pair<size_t,size_t> > ComputeMatching(const std::vector<cv::Point2i> &predictions,
+		const std::vector<cv::Point2i> &detections) {
+	size_t smin = std::min(predictions.size(), detections.size());
+	size_t smax = std::max(predictions.size(), detections.size());
+	bool invert = (predictions.size() > detections.size()); /* if we have more predictions
+	swap to invoke the enumeration, and then swap back at the end */
+	std::map<std::pair<size_t, size_t>, float> costs;
+	for(size_t i = 0; i < smin; ++i) {
+		for (size_t j = 0; j < smax; ++j) {
+			float x = invert ? float(predictions[j].x - detections[i].x) : float(predictions[i].x - detections[j].x);
+			float y = invert ? float(predictions[j].y - detections[i].y) : float(predictions[i].y - detections[j].y);
+			costs[std::make_pair(i,j)] = std::sqrt(x*x + y*y);
+		}
+	}
+	std::vector<size_t> pairing = bestMatching(smin, smax, costs);
+	std::vector< std::pair<size_t,size_t> > matching;
+	for (size_t i = 0; i < pairing.size(); ++i) {
+		if (invert) {
+			//bestMatching returned a list of [idx_detection, idx_prediction]
+			matching.push_back(std::make_pair(pairing[i], i));
+		} else {
+			//bestMatching returned a list of [idx_prediction, idx_detection]
+			matching.push_back(std::make_pair(i, pairing[i]));
+		}
+	}
+}
+
 
 void *tracker2(void *arg) {
 
 #ifdef __arm__
-    raspicam::RaspiCam_Cv cam;
-    cam.set(CV_CAP_PROP_FRAME_WIDTH, FRAME_WIDTH);
-    cam.set(CV_CAP_PROP_FRAME_HEIGHT, FRAME_HEIGHT);
-    cam.open();
+	raspicam::RaspiCam_Cv cam;
+	cam.set(CV_CAP_PROP_FRAME_WIDTH, FRAME_WIDTH);
+	cam.set(CV_CAP_PROP_FRAME_HEIGHT, FRAME_HEIGHT);
+	cam.open();
 #else
-    cv::VideoCapture cam(0);
-    //cam.set(CV_CAP_PROP_FPS, 80.0);
-    cam.set(CV_CAP_PROP_FRAME_WIDTH, FRAME_WIDTH);
-    cam.set(CV_CAP_PROP_FRAME_HEIGHT, FRAME_HEIGHT);
-    //cam.set(CV_CAP_PROP_AUTO_EXPOSURE, 0.0);
-    //cam.set(CV_CAP_PROP_EXPOSURE, 157.0);
-    //cout << cam.get(CV_CAP_PROP_AUTO_EXPOSURE) << " " << cam.get(CV_CAP_PROP_EXPOSURE) << " **\n";
+	cv::VideoCapture cam(0);
+	//cam.set(CV_CAP_PROP_FPS, 80.0);
+	cam.set(CV_CAP_PROP_FRAME_WIDTH, FRAME_WIDTH);
+	cam.set(CV_CAP_PROP_FRAME_HEIGHT, FRAME_HEIGHT);
+	//cam.set(CV_CAP_PROP_AUTO_EXPOSURE, 0.0);
+	//cam.set(CV_CAP_PROP_EXPOSURE, 157.0);
+	//cout << cam.get(CV_CAP_PROP_AUTO_EXPOSURE) << " " << cam.get(CV_CAP_PROP_EXPOSURE) << " **\n";
 #endif
 
-    cv::Mat image;
+	if (!cam.isOpened()) {
+		cerr << "Failed to open the camera" << endl;
+		return 0;
+	}
 
-    if (!cam.isOpened()) {
-        cerr << "Failed to open the camera" << endl;
-        return 0;
-    }
+	cv::Mat image;
+	std::vector< std::vector<cv::Point> > contours;
+	int key_code;
+	struct timespec t_prev, t_curr;
 
-    std::vector< std::vector<cv::Point> > contours;
+	clock_gettime(CLOCK_MONOTONIC, &t_prev);
 
-    int key_code;
+	// First detection to initialize the control structures
+	cam.read(image);
+	ColorBasedDetector detector(cv::Scalar(H_MIN,S_MIN,V_MIN), cv::Scalar(H_MAX,S_MAX,V_MAX));
+	detector.detectObjects(image, contours);
+	// For each object set up a kalman filter
+	std::vector<MovingObject> objects;
+	int objectCount = 0;
+	for (size_t i = 0; i < contours.size(); ++i) {
+		cv::Rect bbox = cv::boundingRect(contours[i]);
+		float x = bbox.x + bbox.width / 2.0f;
+		float y = bbox.y + bbox.height / 2.0f;
+		std::stringstream ss;
+		ss << "obj" << (objectCount++);
+		objects.push_back(MovingObject(ss.str(), x, y));
+	}
 
-    struct timespec t_prev, t_curr;
+	float dt;
+	cv::Mat measurement(2, 1, CV_32F);
+	while (tracking) {
+		// Grab a frame
+		cam.grab();
+		clock_gettime(CLOCK_MONOTONIC, &t_curr);
+		dt = float(getTimeDelta(t_curr, t_prev));
+		cam.retrieve(image);
 
-    cv::Mat measurement(2, 1, CV_32F);
+		detector.detectObjects(image, contours);
+		std::vector<cv::Point2i> predictions; // coupled with the objects array
+		for (size_t i = 0; i < objects.size(); ++i) {
+			predictions.push_back(objects[i].predictPosition(dt));
+		}
+		std::vector<cv::Point2i> detections;
+		for (size_t i = 0; i < contours.size(); ++i) {
+			cv::Rect b = cv::boundingRect(contours[i]);
+			detections.push_back(cv::Point2i(b.x + b.width / 2.0f, b.y + b.height / 2.0f));
+		}
+		// perform the pairwise matching between the identified contours and the
+		// MovingObjects currently tracked by using either the hungarian algorithm
+		// or (assuming we are tracking few objects) by checking every combination
+		// that minimizes the sum of the distances
+		std::vector< std::pair<size_t,size_t> > matching = ComputeMatching(predictions, detections);
+		std::vector<cv::Point2i> used;
+		for (size_t i = 0; i < matching.size(); ++i) {
+			MovingObject &tracker = objects[matching[i].first];
+			cv::Point2i match = detections[matching[i].second];
+			measurement.at<float>(0) = match.x;
+			measurement.at<float>(1) = match.y;
+			used.push_back(match);
+			tracker.feedback(measurement, t_curr);
+		}
+		//remove used detections (if any)
+		for (size_t i = 0; i < used.size(); ++i) {
+			detections.erase(std::remove(detections.begin(), detections.end(), used[i]), detections.end());
+		}
+		//set up new trackers for unmatched detections (if any)
+		for (size_t i = 0; i < detections.size(); ++i) {
+			std::stringstream ss;
+			ss << "obj" << (objectCount++);
+			objects.push_back(MovingObject(ss.str(), detections[i].x, detections[i].y));
+		}
 
-    clock_gettime(CLOCK_MONOTONIC, &t_prev);
+		/* plot points
+		#define drawCross( center, color, d )                                 \
+			cv::line( image, cv::Point( center.x - d, center.y - d ),                \
+						 cv::Point( center.x + d, center.y + d ), color, 1, CV_AA, 0); \
+			cv::line( image, cv::Point( center.x + d, center.y - d ),                \
+						 cv::Point( center.x - d, center.y + d ), color, 1, CV_AA, 0 )
+		drawCross(predictedPoint, cv::Scalar(255, 120, 0), 5);*/
 
-    // First detection to initialize the control structures
-    cam.read(image);
-    ColorBasedDetector detector(cv::Scalar(H_MIN,S_MIN,V_MIN), cv::Scalar(H_MAX,S_MAX,V_MAX));
-    detector.detectObjects(image, contours);
-    // For each object set up a kalman filter
-    std::vector<MovingObject> objects(contours.size());
-    
+		cv::imshow(windowName, image);
 
-    while (tracking) {
-        // Grab a frame
-        //cam >> image;
-        cam.grab();
-        clock_gettime(CLOCK_MONOTONIC, &t_curr);
-        cam.retrieve(image);
+		// TODO if trackers lost their object for more than a given threshold, remove them
+		objects.erase(std::remove_if(objects.begin(), objects.end(), outdated(t_curr, 2.0f)), objects.end());
 
-        float dt = float(getTimeDelta(t_curr, t_prev));
+		key_code = cv::waitKey(1);
+		if (key_code == 32 || (key_code & 0xff) == 32 ) {
+			// skip
+		}
 
-        cv::cvtColor(image, HSV, CV_BGR2HSV);
-        cv::inRange(HSV, cv::Scalar(H_MIN,S_MIN,V_MIN), cv::Scalar(H_MAX,S_MAX,V_MAX), stencil);
-        cv::morphologyEx(stencil, stencil, cv::MORPH_OPEN, cv::getStructuringElement(cv::MORPH_RECT,cv::Size(5,5)));
+		t_prev = t_curr;
+	}
 
-        // Find contours
-        stencil.copyTo(tmp);
-        //cv::findContours(tmp, cnt, hierarchy, CV_RETR_EXTERNAL, CV_CHAIN_APPROX_SIMPLE);
-        cv::findContours(tmp, cnt, CV_RETR_EXTERNAL, CV_CHAIN_APPROX_SIMPLE);
-        std::vector<cv::Point> *maxCnt = 0;
-        for (size_t i = 0; i < cnt.size(); i++) {
-            cv::Rect b = cv::boundingRect(cnt[i]);
-            cv::rectangle(image, b, cv::Scalar(0, 255, 0));
-            if (!maxCnt || (cv::boundingRect(*maxCnt)).area() < b.area()) {
-                maxCnt = &cnt[i];
-                found = true;
-            }
-        }
+	cam.release();
+	cv::destroyAllWindows();
 
-        if (found) {
-            if (!kalman_initialized) {
-                /* transition matrix will be updated at each loop:
-                   1   0  dt   0
-                   0   1   0  dt
-                   0   1   1   1
-                   0   0   0   1 */
-                cv::setIdentity(kalman.transitionMatrix);
-
-                /* measurement is 
-                   1   0   0   0
-                   0   1   0   0 */
-                kalman.measurementMatrix = cv::Mat::zeros(2, 4, CV_32F);
-                kalman.measurementMatrix.at<float>(0,0) = 1.0f;
-                kalman.measurementMatrix.at<float>(1,1) = 1.0f;
-
-                /* FIXME */
-                cv::setIdentity(kalman.processNoiseCov, cv::Scalar(1e-2));
-                cv::setIdentity(kalman.measurementNoiseCov, cv::Scalar(1e-1));
-                cv::setIdentity(kalman.errorCovPost, cv::Scalar(1));
-                //kalman.statePost = *(cv::Mat_<float>(4,1) << 20.0f, 20.0f, 0, 0);
-                cv::Rect b = cv::boundingRect(*maxCnt);
-                float init_x = b.x + b.width / 2.0f;
-                float init_y = b.y + b.height / 2.0f;
-                kalman.statePost = *(cv::Mat_<float>(4,1) << init_x, init_y, 0, 0);
-                kalman_initialized = true;
-            }
-
-            // change state transition according to dt
-            kalman.transitionMatrix.at<float>(1,3) = dt;
-            kalman.transitionMatrix.at<float>(0,2) = dt;
-
-            cv::Mat prediction = kalman.predict();
-            cv::Point predictedPoint(int(prediction.at<float>(0)), int(prediction.at<float>(1)));
-
-            if (maxCnt) {
-                cv::Rect b = cv::boundingRect(*maxCnt);
-                measurement.at<float>(0) = b.x + b.width / 2.0f;
-                measurement.at<float>(1) = b.y + b.height / 2.0f;
-                kalman.correct(measurement);
-            }
-
-            // plot points
-            #define drawCross( center, color, d )                                 \
-                cv::line( image, cv::Point( center.x - d, center.y - d ),                \
-                             cv::Point( center.x + d, center.y + d ), color, 1, CV_AA, 0); \
-                cv::line( image, cv::Point( center.x + d, center.y - d ),                \
-                             cv::Point( center.x - d, center.y + d ), color, 1, CV_AA, 0 )
-
-            drawCross(predictedPoint, cv::Scalar(255, 120, 0), 5);
-        }
-
-        imshow(windowName, image);
-        imshow(windowName1, HSV);
-        imshow(windowName2, stencil);
-
-        key_code = cv::waitKey(1);
-        if (key_code == 32 || (key_code & 0xff) == 32 ) {
-            // skip
-        }
-
-        t_prev = t_curr;
-    }
-
-    cam.release();
-    cv::destroyAllWindows();
-
-    return 0;
+	return 0;
 }
+

@@ -4,6 +4,18 @@
 		"selected_items":
 		[
 			[
+				"clo",
+				"closing"
+			],
+			[
+				"obj",
+				"objects"
+			],
+			[
+				"detec",
+				"detectObjects"
+			],
+			[
 				"mea",
 				"measurementMatrix"
 			],
@@ -52,10 +64,60 @@
 	"buffers":
 	[
 		{
-			"file": "RHS.sublime-project",
+			"file": "VideoTracker/tracker2.cpp",
 			"settings":
 			{
-				"buffer_size": 45,
+				"buffer_size": 7927,
+				"line_ending": "Unix",
+				"name": "tracker2.cpp"
+			}
+		},
+		{
+			"file": "HSVFilter/main (copy).cpp",
+			"settings":
+			{
+				"buffer_size": 2890,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "VideoTracker/server.cpp",
+			"settings":
+			{
+				"buffer_size": 1329,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "VideoTracker/CMakeLists.txt",
+			"settings":
+			{
+				"buffer_size": 333,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "VideoTracker/client.cpp",
+			"settings":
+			{
+				"buffer_size": 712,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "VideoTracker/ColorBasedDetector.hpp",
+			"settings":
+			{
+				"buffer_size": 1058,
+				"line_ending": "Unix",
+				"name": "ColorBasedFilter.hpp"
+			}
+		},
+		{
+			"file": "VideoTracker/MovingObject.hpp",
+			"settings":
+			{
+				"buffer_size": 2280,
 				"line_ending": "Unix"
 			}
 		}
@@ -84,9 +146,13 @@
 	"command_palette":
 	{
 		"height": 398.0,
-		"last_filter": "pac",
+		"last_filter": "Package Control: ",
 		"selected_items":
 		[
+			[
+				"Package Control: ",
+				"Package Control: Install Package"
+			],
 			[
 				"pac",
 				"Package Control: Install Package"
@@ -94,10 +160,6 @@
 			[
 				"prv",
 				"PackageResourceViewer: Open Resource"
-			],
-			[
-				"Package Control: ",
-				"Package Control: Install Package"
 			],
 			[
 				"pack",
@@ -125,10 +187,18 @@
 	},
 	"expanded_folders":
 	[
-		"/home/andrea/Documents/RHS1415"
+		"/home/andrea/Desktop/Projects/RHS1415",
+		"/home/andrea/Desktop/Projects/RHS1415/HSVFilter",
+		"/home/andrea/Desktop/Projects/RHS1415/OpenCVTest",
+		"/home/andrea/Desktop/Projects/RHS1415/VideoTracker"
 	],
 	"file_history":
 	[
+		"/home/andrea/Desktop/Projects/RHS1415/VideoTracker/ServerSocket.hpp",
+		"/home/andrea/Desktop/Projects/RHS1415/VideoTracker/Socket.hpp",
+		"/home/andrea/Desktop/Projects/RHS1415/VideoTracker/tracker.cpp",
+		"/home/andrea/Documents/RHS1415/VideoTracker/tracker.cpp",
+		"/home/andrea/Documents/RHS1415/RHS.sublime-project",
 		"/home/andrea/Documents/Projects/VideoTracker/MovingObject.hpp",
 		"/home/andrea/Documents/Projects/VideoTracker/TODO.txt",
 		"/home/andrea/.config/sublime-text-3/Packages/User/Preferences.sublime-settings",
@@ -157,7 +227,7 @@
 	],
 	"find":
 	{
-		"height": 26.0
+		"height": 24.0
 	},
 	"find_in_files":
 	{
@@ -171,6 +241,9 @@
 		"case_sensitive": false,
 		"find_history":
 		[
+			"costs",
+			"\";\n",
+			"Mat_",
 			"double",
 			"endl",
 			"address",
@@ -194,16 +267,133 @@
 	"groups":
 	[
 		{
-			"selected": 0,
+			"selected": 1,
 			"sheets":
 			[
 				{
 					"buffer": 0,
-					"file": "RHS.sublime-project",
+					"file": "VideoTracker/tracker2.cpp",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 45,
+						"buffer_size": 7927,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								4626,
+								4626
+							]
+						],
+						"settings":
+						{
+							"auto_name": "tracker2.cpp",
+							"syntax": "Packages/C++/C++.tmLanguage",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 1619.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 1,
+					"type": "text"
+				},
+				{
+					"buffer": 1,
+					"file": "HSVFilter/main (copy).cpp",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 2890,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								301,
+								301
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/C++/C++.tmLanguage",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 0,
+					"type": "text"
+				},
+				{
+					"buffer": 2,
+					"file": "VideoTracker/server.cpp",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 1329,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								237,
+								237
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/C++/C++.tmLanguage",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 2,
+					"type": "text"
+				},
+				{
+					"buffer": 3,
+					"file": "VideoTracker/CMakeLists.txt",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 333,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								232,
+								232
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Text/Plain text.tmLanguage"
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 6,
+					"type": "text"
+				},
+				{
+					"buffer": 4,
+					"file": "VideoTracker/client.cpp",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 712,
 						"regions":
 						{
 						},
@@ -216,13 +406,79 @@
 						],
 						"settings":
 						{
-							"syntax": "Packages/JavaScript/JSON.tmLanguage"
+							"syntax": "Packages/C++/C++.tmLanguage",
+							"translate_tabs_to_spaces": false
 						},
 						"translation.x": 0.0,
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 0,
+					"stack_index": 3,
+					"type": "text"
+				}
+			]
+		},
+		{
+			"selected": 1,
+			"sheets":
+			[
+				{
+					"buffer": 5,
+					"file": "VideoTracker/ColorBasedDetector.hpp",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 1058,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								1011,
+								1011
+							]
+						],
+						"settings":
+						{
+							"auto_name": "ColorBasedFilter.hpp",
+							"syntax": "Packages/C++/C++.tmLanguage",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 5,
+					"type": "text"
+				},
+				{
+					"buffer": 6,
+					"file": "VideoTracker/MovingObject.hpp",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 2280,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								2270,
+								2270
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/C++/C++.tmLanguage",
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 403.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 4,
 					"type": "text"
 				}
 			]
@@ -230,7 +486,7 @@
 	],
 	"incremental_find":
 	{
-		"height": 26.0
+		"height": 24.0
 	},
 	"input":
 	{
@@ -245,11 +501,18 @@
 				0,
 				1,
 				1
+			],
+			[
+				1,
+				0,
+				2,
+				1
 			]
 		],
 		"cols":
 		[
 			0.0,
+			0.483011130638,
 			1.0
 		],
 		"rows":
@@ -271,7 +534,7 @@
 	"project": "RHS.sublime-project",
 	"replace":
 	{
-		"height": 48.0
+		"height": 44.0
 	},
 	"save_all_on_build": true,
 	"select_file":

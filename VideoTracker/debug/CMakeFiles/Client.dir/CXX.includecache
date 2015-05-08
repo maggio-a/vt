@@ -6,7 +6,7 @@
 
 #IncludeRegexTransform: 
 
-/home/andrea/Documents/RHS1415/VideoTracker/Socket.hpp
+/home/andrea/Desktop/Projects/RHS1415/VideoTracker/Socket.hpp
 errno.h
 -
 cstdio
@@ -24,7 +24,7 @@ arpa/inet.h
 unistd.h
 -
 
-/home/andrea/Documents/RHS1415/VideoTracker/client.cpp
+/home/andrea/Desktop/Projects/RHS1415/VideoTracker/client.cpp
 iostream
 -
 memory
@@ -32,9 +32,9 @@ memory
 string
 -
 Socket.hpp
-/home/andrea/Documents/RHS1415/VideoTracker/Socket.hpp
+/home/andrea/Desktop/Projects/RHS1415/VideoTracker/Socket.hpp
 msg.hpp
-/home/andrea/Documents/RHS1415/VideoTracker/msg.hpp
+/home/andrea/Desktop/Projects/RHS1415/VideoTracker/msg.hpp
 
-/home/andrea/Documents/RHS1415/VideoTracker/msg.hpp
+/home/andrea/Desktop/Projects/RHS1415/VideoTracker/msg.hpp
 

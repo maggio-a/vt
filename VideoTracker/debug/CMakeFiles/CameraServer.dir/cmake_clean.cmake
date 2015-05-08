@@ -1,6 +1,7 @@
 FILE(REMOVE_RECURSE
   "CMakeFiles/CameraServer.dir/server.cpp.o"
   "CMakeFiles/CameraServer.dir/tracker.cpp.o"
+  "CMakeFiles/CameraServer.dir/tracker2.cpp.o"
   "CameraServer.pdb"
   "CameraServer"
 )

@@ -77,9 +77,13 @@ Socket * ServerSocket::accept() {
 }
 
 void ServerSocket::close() {
-	if (::close(_sck)) {
-		perror("close");
-		throw _err = errno;
+	if (!_closed) {
+		if (::close(_sck)) {
+			perror("close");
+			throw _err = errno;
+		} else {
+			_closed = true;
+		}
 	}
 }
 

@@ -39,10 +39,10 @@ RM = /usr/bin/cmake -E remove -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /home/andrea/Documents/RHS1415/VideoTracker
+CMAKE_SOURCE_DIR = /home/andrea/Desktop/Projects/RHS1415/VideoTracker
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /home/andrea/Documents/RHS1415/VideoTracker/debug
+CMAKE_BINARY_DIR = /home/andrea/Desktop/Projects/RHS1415/VideoTracker/debug
 
 #=============================================================================
 # Targets provided globally by CMake.
@@ -69,9 +69,9 @@ rebuild_cache/fast: rebuild_cache
 
 # The main all target
 all: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/andrea/Documents/RHS1415/VideoTracker/debug/CMakeFiles /home/andrea/Documents/RHS1415/VideoTracker/debug/CMakeFiles/progress.marks
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/andrea/Desktop/Projects/RHS1415/VideoTracker/debug/CMakeFiles /home/andrea/Desktop/Projects/RHS1415/VideoTracker/debug/CMakeFiles/progress.marks
 	$(MAKE) -f CMakeFiles/Makefile2 all
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/andrea/Documents/RHS1415/VideoTracker/debug/CMakeFiles 0
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/andrea/Desktop/Projects/RHS1415/VideoTracker/debug/CMakeFiles 0
 .PHONY : all
 
 # The main clean target
@@ -196,6 +196,30 @@ tracker.cpp.s:
 	$(MAKE) -f CMakeFiles/CameraServer.dir/build.make CMakeFiles/CameraServer.dir/tracker.cpp.s
 .PHONY : tracker.cpp.s
 
+tracker2.o: tracker2.cpp.o
+.PHONY : tracker2.o
+
+# target to build an object file
+tracker2.cpp.o:
+	$(MAKE) -f CMakeFiles/CameraServer.dir/build.make CMakeFiles/CameraServer.dir/tracker2.cpp.o
+.PHONY : tracker2.cpp.o
+
+tracker2.i: tracker2.cpp.i
+.PHONY : tracker2.i
+
+# target to preprocess a source file
+tracker2.cpp.i:
+	$(MAKE) -f CMakeFiles/CameraServer.dir/build.make CMakeFiles/CameraServer.dir/tracker2.cpp.i
+.PHONY : tracker2.cpp.i
+
+tracker2.s: tracker2.cpp.s
+.PHONY : tracker2.s
+
+# target to generate assembly for a file
+tracker2.cpp.s:
+	$(MAKE) -f CMakeFiles/CameraServer.dir/build.make CMakeFiles/CameraServer.dir/tracker2.cpp.s
+.PHONY : tracker2.cpp.s
+
 # Help Target
 help:
 	@echo "The following are some of the valid targets for this Makefile:"
@@ -215,6 +239,9 @@ help:
 	@echo "... tracker.o"
 	@echo "... tracker.i"
 	@echo "... tracker.s"
+	@echo "... tracker2.o"
+	@echo "... tracker2.i"
+	@echo "... tracker2.s"
 .PHONY : help
 
 

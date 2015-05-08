@@ -84,9 +84,13 @@ void Socket::send(void *base, size_t n) {
 }
 
 void Socket::close() {
-	if (::close(_fd)) {
-		perror("close");
-		throw _err = errno;
+	if (!_closed) {
+		if (::close(_fd)) {
+			perror("close");
+			throw _err = errno;
+		} else {
+			_closed = true;
+		}
 	}
 }
 
