@@ -1,6 +1,11 @@
+#ifndef RHS_COLORBASEDDETECTOR_HDR
+#define RHS_COLORBASEDDETECTOR_HDR
+
 #include <vector>
 
 #include <opencv2/opencv.hpp>
+
+namespace RHS {
 
 class ColorBasedDetector {
 public:
@@ -33,3 +38,7 @@ void ColorBasedDetector::detectObjects(const cv::Mat &image, std::vector< std::v
     //cv::findContours(tmp, cnt, hierarchy, CV_RETR_EXTERNAL, CV_CHAIN_APPROX_SIMPLE);
     cv::findContours(_mask, contours_out, CV_RETR_EXTERNAL, CV_CHAIN_APPROX_SIMPLE);
 }
+
+} // RHS namespace
+
+#endif
