@@ -12,6 +12,8 @@ static inline float _getTimeDelta(const struct timespec &t2, const struct timesp
 
 using cv::KalmanFilter;
 
+namespace rhs {
+
 class MovingObject {
 public:
     MovingObject(std::string tag, float x, float y);
@@ -79,5 +81,7 @@ struct outdated {
         return _getTimeDelta(time, obj._lastDetected) > threshold;
     }
 };
+
+} // rhs namespace
 
 #endif

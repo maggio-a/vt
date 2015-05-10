@@ -5,7 +5,7 @@
 
 #include <opencv2/opencv.hpp>
 
-namespace RHS {
+namespace rhs {
 
 class ColorBasedDetector {
 public:
@@ -39,6 +39,6 @@ void ColorBasedDetector::detectObjects(const cv::Mat &image, std::vector< std::v
     cv::findContours(_mask, contours_out, CV_RETR_EXTERNAL, CV_CHAIN_APPROX_SIMPLE);
 }
 
-} // RHS namespace
+} // rhs namespace
 
 #endif

@@ -15,9 +15,6 @@ using std::endl;
 extern void *tracker(void *arg);
 extern void *tracker2(void *arg);
 
-const std::string homographyPath = "homography.yaml";
-void performCalibration(); 
-
 bool tracking = false;
 
 int main(int argc, char *argv[]) {
@@ -36,7 +33,7 @@ int main(int argc, char *argv[]) {
 	}
 
 	if (calibrate) {
-		performCalibration();
+		rhs::performCalibration();
 		cout << "Calibration completed" << endl;
 		exit(EXIT_SUCCESS);
 	}
@@ -97,60 +94,4 @@ int main(int argc, char *argv[]) {
 
 	channel->close();
 	server->close();
-}
-
-#include <opencv2/opencv.hpp>
-
-void performCalibration() {
-	const int FRAME_WIDTH = 640;
-	const int FRAME_Height = 480;
-#ifdef __arm__
-    raspicam::RaspiCam_Cv cam;
-    cam.set(CV_CAP_PROP_FRAME_WIDTH, FRAME_WIDTH);
-    cam.set(CV_CAP_PROP_FRAME_HEIGHT, FRAME_HEIGHT);
-    cam.open();
-#else
-    cv::VideoCapture cam(0);
-    //cam.set(CV_CAP_PROP_FPS, 80.0);
-    cam.set(CV_CAP_PROP_FRAME_WIDTH, FRAME_WIDTH);
-    cam.set(CV_CAP_PROP_FRAME_HEIGHT, FRAME_HEIGHT);
-#endif
-
-    const std::string windowName = "Calibration";
-
-    cv::Mat image;
-
-    if (!cam.isOpened()) {
-        cerr << "Failed to open the camera" << endl;
-        return -1;
-    }
-
-    int keyCode;
-
-    namedWindow(windowName);
-    setMouseCallback(windowName, on_mouse, 0);
-
-    while (true) {
-        cam.grab();
-        cam.retrieve(image);
-        cv::polylines(image, ground, true, Scalar(0,0,200), 1, CV_AA);
-        cv::putText(image, "TRACING:", Point(5, 20), FONT_HERSHEY_SIMPLEX, 1.0, Scalar(255,255,255));
-        if (tracing)
-        	cv::putText(image, "ON", Point(35, 20), FONT_HERSHEY_SIMPLEX, 1.0, Scalar(0,255,0));
-        else
-        	cv::putText(image, "OFF", Point(35, 20), FONT_HERSHEY_SIMPLEX, 1.0, Scalar(0,0,255));
-        	
-        cv::imshow(windowName, image);
-        keyCode = cv::waitKey(1);
-        if (keyCode == 32 || (keyCode & 0xff) == 32) {
-            if (ground.size() == 4)
-                ground.clear();
-            tracing = !tracing; //toggle
-        }
-    }
-
-    cam.release();
-    cv::destroyAllWindows();
-
-    return 0;
 }
