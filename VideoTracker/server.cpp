@@ -3,6 +3,7 @@
 #include <cstdlib>
 #include <unistd.h>
 
+#include "calibration.hpp"
 #include "ServerSocket.hpp"
 #include "Socket.hpp"
 #include "thread.hpp"
@@ -17,25 +18,38 @@ extern void *tracker2(void *arg);
 
 bool tracking = false;
 
-int main(int argc, char *argv[]) {
+void help(char *program) {
+	std::cout << "Usage: " << program << " [-c width height]" << std::endl
+	          << " -c option to configure the coordinate transformation" << std::endl
+	          << "   width: width of the ground rectangle" << std::endl
+	          << "   height: height of the ground rectangle" << std::endl
+	          << "   the ground rectangle on the image plane must" << std::endl
+	          << "   be drawn according to the ground coordinates (0,0)->(width,0)->(width,height)->(0,height)" << std::endl;
+}
 
+int main(int argc, char *argv[]) {
 	int opt;
-	boolean calibrate = false;
+	bool calibrate = false;
 	while ((opt = getopt(argc, argv, "c")) != -1) {
 		switch (opt) {
 		case 'c':
 			calibrate = true;
 			break;
 		default:
-			help();
-			exit(EXIT_FAILURE);
+			help(argv[0]);
+			std::exit(EXIT_FAILURE);
 		}
 	}
 
 	if (calibrate) {
-		rhs::performCalibration();
-		cout << "Calibration completed" << endl;
-		exit(EXIT_SUCCESS);
+		help(argv[0]);
+		if (optind > argc-2) {
+			std::exit(EXIT_FAILURE);
+		}
+		float width = strtod(argv[optind++], 0);
+		float height = strtod(argv[optind++], 0);
+		rhs::performCalibration(width, height);
+		std::exit(EXIT_SUCCESS);
 	}
 
 	// need to try-catch
@@ -69,7 +83,7 @@ int main(int argc, char *argv[]) {
 			if (!tracking) {
 				tracking = true;
 				try {
-					cam_service = new thread(tracker, NULL);
+					cam_service = new thread(tracker2, NULL);
 				}
 				catch (int error) {
 					cerr << "disaster" << endl;
