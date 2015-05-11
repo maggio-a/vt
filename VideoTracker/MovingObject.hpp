@@ -6,8 +6,6 @@
 
 #include "Timer.hpp"
 
-using cv::KalmanFilter;
-
 namespace rhs {
 
 class MovingObject {
@@ -15,7 +13,7 @@ public:
     MovingObject(std::string tag, float x, float y);
     ~MovingObject();
 
-    cv::Point2i predictPosition(float dt);
+    cv::Point2f predictPosition(float dt);
     void feedback(const cv::Mat &measurement);
     std::string tag() const;
 private:
@@ -53,11 +51,11 @@ MovingObject::~MovingObject() {
 
 }
 
-cv::Point2i MovingObject::predictPosition(float dt) {
+cv::Point2f MovingObject::predictPosition(float dt) {
     kf.transitionMatrix.at<float>(1,3) = dt;
     kf.transitionMatrix.at<float>(0,2) = dt;
     const cv::Mat &prediction = kf.predict();
-    return cv::Point2i(prediction.at<float>(0), prediction.at<float>(1));
+    return cv::Point2f(prediction.at<float>(0), prediction.at<float>(1));
 }
 
 void MovingObject::feedback(const cv::Mat &measurement) {
