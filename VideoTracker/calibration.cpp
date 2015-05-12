@@ -102,7 +102,7 @@ void rhs::performCalibration(float width, float height) {
         if (fs.isOpened()) {
             fs << rhs::PerspectiveTransformationName << img2world;
             fs.release();
-            std::cout << "Calibration data written to" << rhs::PathToCalibrationData << std::endl;
+            std::cout << "Calibration data written to " << rhs::PathToCalibrationData << std::endl;
         } else {
             std::cerr << "Unable to write calibration data to " << rhs::PathToCalibrationData << std::endl;
             std::exit(EXIT_FAILURE);

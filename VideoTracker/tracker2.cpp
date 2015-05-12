@@ -80,8 +80,8 @@ void *tracker2(void *arg) {
 	if (!fs.isOpened() || fs[rhs::PerspectiveTransformationName].type() == cv::FileNode::NONE) {
 		//disaster
 		std::cerr << "WARNING: Unable to read calibration data from " << rhs::PathToCalibrationData
-				  << ", using image coordinates" << std::endl;
-		img2world = cv::Mat(3, 3, CV_32F);
+				  << ", using plain image coordinates" << std::endl;
+		img2world = cv::Mat(3, 3, CV_64F);
 		cv::setIdentity(img2world);
 	} else {
 		fs[rhs::PerspectiveTransformationName] >> img2world;
@@ -89,12 +89,17 @@ void *tracker2(void *arg) {
 	fs.release();
 
 	cv::Mat image;
+	// warm up camera
+	for (size_t i = 0; i < 10; ++i) {
+		cam.read(image);
+	}
 	std::vector< std::vector<cv::Point> > contours;
 	int key_code;
 	rhs::Timer timer;
 
 	// First detection to initialize the control structures
 	cam.read(image);
+	cv::imwrite("firstframe.png", image);
 	rhs::ColorBasedDetector detector(cv::Scalar(H_MIN,S_MIN,V_MIN), cv::Scalar(H_MAX,S_MAX,V_MAX));
 	detector.detectObjects(image, contours);
 	// For each object set up a kalman filter
@@ -105,7 +110,7 @@ void *tracker2(void *arg) {
 		float x = bbox.x + bbox.width / 2.0f;
 		float y = bbox.y + bbox.height / 2.0f;
 		std::stringstream ss;
-		ss << "obj" << (objectCount++);
+		ss << "OBJ " << (objectCount++);
 		objects.push_back(rhs::MovingObject(ss.str(), x, y));
 	}
 
@@ -134,37 +139,41 @@ void *tracker2(void *arg) {
 		// MovingObjects currently tracked by using either the hungarian algorithm
 		// or (assuming we are tracking few objects) by checking every combination
 		// that minimizes the sum of the distances
-		std::set<size_t> used;
-		if (predictions.size() > 0) {
-			vector<size_t> matching = ComputeMatching(predictions, detections);
-			for (size_t i = 0; i < matching.size(); ++i) {
-				rhs::MovingObject &tracker = objects[i];
-				size_t j = matching[i];
-				if (j < detections.size()) {
-					cv::Point2f match = detections[j];
-					cv::Point2f groundPoint = transformPoint(match, img2world);
-					cv::putText(image, tracker.tag(), cv::Point2i(match.x,match.y), font, font_scale, cv::Scalar(0,255,0));
-					std::stringstream xWorld, yWorld;
-					xWorld << groundPoint.x;
-					yWorld << groundPoint.y;
-					cv::putText(image, xWorld.str(), cv::Point2i(match.x,match.y+10), font, font_scale, cv::Scalar(0,255,0));
-					cv::putText(image, yWorld.str(), cv::Point2i(match.x,match.y+20), font, font_scale, cv::Scalar(0,255,0));
-					
-					measurement.at<float>(0) = match.x;
-					measurement.at<float>(1) = match.y;
-					assert(used.insert(j).second == true);
-					tracker.feedback(measurement);
-				} else {
-					cout << "FIXME object without detection" << endl;
+
+		// FIXME fix this, now only prints predictions if we have any detection
+		if (detections.size() > 0) { // if we detected objects
+			std::set<size_t> used;
+			if (predictions.size() > 0) { // if already tracking objects, compute the matching 
+				vector<size_t> matching = ComputeMatching(predictions, detections);
+				for (size_t i = 0; i < matching.size(); ++i) {
+					rhs::MovingObject &tracker = objects[i];
+					size_t j = matching[i];
+					if (j < detections.size()) {
+						cv::Point2f match = detections[j];
+						cv::Point2f groundPoint = transformPoint(match, img2world);
+						cv::putText(image, tracker.tag(), cv::Point2i(match.x,match.y), font, font_scale, cv::Scalar(0,255,0));
+						std::stringstream xWorld, yWorld;
+						xWorld << "xw: " << groundPoint.x;
+						yWorld << "yw: " << groundPoint.y;
+						cv::putText(image, xWorld.str(), cv::Point2i(match.x,match.y+12), font, font_scale, cv::Scalar(0,255,0));
+						cv::putText(image, yWorld.str(), cv::Point2i(match.x,match.y+24), font, font_scale, cv::Scalar(0,255,0));
+						
+						measurement.at<float>(0) = match.x;
+						measurement.at<float>(1) = match.y;
+						assert(used.insert(j).second == true);
+						tracker.feedback(measurement);
+					} else {
+						cout << "FIXME object without detection" << endl;
+					}
 				}
 			}
-		}
-		//set up new trackers for unmatched detections (if any)
-		for (size_t j = 0; j < detections.size(); ++j) {
-			if (used.find(j) == used.end()) {
-				std::stringstream ss;
-				ss << "obj" << (objectCount++);
-				objects.push_back(rhs::MovingObject(ss.str(), detections[j].x, detections[j].y));
+			// set up new trackers for unmatched detections (if any)
+			for (size_t j = 0; j < detections.size(); ++j) {
+				if (used.find(j) == used.end()) {
+					std::stringstream ss;
+					ss << "obj " << (objectCount++);
+					objects.push_back(rhs::MovingObject(ss.str(), detections[j].x, detections[j].y));
+				}
 			}
 		}
 
@@ -178,7 +187,7 @@ void *tracker2(void *arg) {
 
 		cv::imshow(windowName, image);
 
-		// TODO if trackers lost their object for more than a given threshold, remove them
+		// if trackers lost their object for more than a given threshold, remove them
 		objects.erase(std::remove_if(objects.begin(), objects.end(), rhs::outdated(2.0f)), objects.end());
 
 		key_code = cv::waitKey(1);
