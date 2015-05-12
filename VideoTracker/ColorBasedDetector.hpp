@@ -1,18 +1,19 @@
 #ifndef RHS_COLORBASEDDETECTOR_HDR
 #define RHS_COLORBASEDDETECTOR_HDR
 
-#include <vector>
+#include "IDetector.hpp"
 
+#include <vector>
 #include <opencv2/opencv.hpp>
 
 namespace rhs {
 
-class ColorBasedDetector {
+class ColorBasedDetector : public IDetector {
 public:
 	ColorBasedDetector(cv::Scalar HSVMin, cv::Scalar HSVMax);
 	~ColorBasedDetector();
 
-	void detectObjects(const cv::Mat &image, std::vector< std::vector<cv::Point2i> > &contours_out);
+	void DetectObjects(const cv::Mat &image, std::vector< std::vector<cv::Point2i> > &contours_out);
 
 private:
 	cv::Scalar rangeMin;
@@ -30,7 +31,7 @@ ColorBasedDetector::~ColorBasedDetector() {
 
 }
 
-void ColorBasedDetector::detectObjects(const cv::Mat &image, std::vector< std::vector<cv::Point2i> > &contours_out) {
+void ColorBasedDetector::DetectObjects(const cv::Mat &image, std::vector< std::vector<cv::Point2i> > &contours_out) {
 	cv::cvtColor(image, hsv, CV_BGR2HSV);
     cv::inRange(hsv, rangeMin, rangeMax, mask);
     cv::morphologyEx(mask, mask, cv::MORPH_OPEN, cv::getStructuringElement(cv::MORPH_RECT,cv::Size(5,5)));

@@ -2,7 +2,7 @@
 #define RHS_SERVERSOCKET_HDR
 
 #include <string>
-#include <errno.h>
+#include <cerrno>
 #include <cstdio>
 #include <iostream>
 #include <sys/types.h>

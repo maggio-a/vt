@@ -79,91 +79,42 @@
 			"file": "VideoTracker/tracker2.cpp",
 			"settings":
 			{
-				"buffer_size": 6297,
+				"buffer_size": 6487,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "VideoTracker/tracker.cpp",
+			"settings":
+			{
+				"buffer_size": 6766,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "VideoTracker/IDetector.hpp",
+			"settings":
+			{
+				"buffer_size": 288,
 				"line_ending": "Unix",
-				"name": "tracker2.cpp"
+				"name": "IDetector.hpp"
 			}
 		},
 		{
-			"file": "VideoTracker/CMakeLists.txt",
+			"file": "VideoTracker/BackgroundSubtractionBasedDetector.hpp",
 			"settings":
 			{
-				"buffer_size": 445,
-				"line_ending": "Unix"
-			}
-		},
-		{
-			"file": "VideoTracker/hungarian.cpp",
-			"settings":
-			{
-				"buffer_size": 16887,
-				"line_ending": "Unix"
-			}
-		},
-		{
-			"file": "VideoTracker/hungarian.hpp",
-			"settings":
-			{
-				"buffer_size": 222,
+				"buffer_size": 1104,
 				"line_ending": "Unix",
-				"name": "hungarian.hpp"
-			}
-		},
-		{
-			"file": "VideoTracker/Timer.hpp",
-			"settings":
-			{
-				"buffer_size": 586,
-				"line_ending": "Unix"
-			}
-		},
-		{
-			"file": "VideoTracker/server.cpp",
-			"settings":
-			{
-				"buffer_size": 2382,
-				"line_ending": "Unix"
-			}
-		},
-		{
-			"file": "VideoTracker/calibration.hpp",
-			"settings":
-			{
-				"buffer_size": 279,
-				"line_ending": "Unix"
-			}
-		},
-		{
-			"file": "VideoTracker/calibration.cpp",
-			"settings":
-			{
-				"buffer_size": 4085,
-				"line_ending": "Unix"
-			}
-		},
-		{
-			"file": "VideoTracker/MovingObject.hpp",
-			"settings":
-			{
-				"buffer_size": 2027,
-				"line_ending": "Unix"
-			}
-		},
-		{
-			"file": "Homography/main.cpp",
-			"settings":
-			{
-				"buffer_size": 1622,
-				"line_ending": "Unix"
+				"name": "BackgroundSubtractionBasedDetector.hpp"
 			}
 		},
 		{
 			"file": "VideoTracker/ColorBasedDetector.hpp",
 			"settings":
 			{
-				"buffer_size": 1140,
-				"line_ending": "Unix",
-				"name": "ColorBasedFilter.hpp"
+				"buffer_size": 1184,
+				"line_ending": "Unix"
 			}
 		}
 	],
@@ -191,9 +142,13 @@
 	"command_palette":
 	{
 		"height": 398.0,
-		"last_filter": "Package Control: ",
+		"last_filter": "color",
 		"selected_items":
 		[
+			[
+				"color",
+				"ColorSchemeSelector: Select Color Scheme"
+			],
 			[
 				"Package Control: ",
 				"Package Control: Install Package"
@@ -232,11 +187,25 @@
 	},
 	"expanded_folders":
 	[
-		"/home/andrea/Documents/rhs1415",
-		"/home/andrea/Documents/rhs1415/VideoTracker"
+		"/home/andrea/Desktop/Projects/rhs1415",
+		"/home/andrea/Desktop/Projects/rhs1415/OpenCVTest",
+		"/home/andrea/Desktop/Projects/rhs1415/VideoTracker"
 	],
 	"file_history":
 	[
+		"/home/andrea/Desktop/Projects/rhs1415/OpenCVTest/main.cpp",
+		"/home/andrea/Desktop/Projects/rhs1415/VideoTracker/ColorBasedDetector.hpp",
+		"/home/andrea/Desktop/Projects/rhs1415/VideoTracker/server.cpp",
+		"/home/andrea/Desktop/Projects/rhs1415/VideoTracker/tracker2.cpp",
+		"/home/andrea/Desktop/Projects/rhs1415/VideoTracker/Timer.hpp",
+		"/home/andrea/Desktop/Projects/rhs1415/VideoTracker/hungarian.hpp",
+		"/home/andrea/Desktop/Projects/rhs1415/VideoTracker/calibration.hpp",
+		"/home/andrea/Desktop/Projects/rhs1415/VideoTracker/calibration.cpp",
+		"/home/andrea/Desktop/Projects/rhs1415/VideoTracker/ServerSocket.hpp",
+		"/home/andrea/Desktop/Projects/rhs1415/Homography/main.cpp",
+		"/home/andrea/Desktop/Projects/rhs1415/VideoTracker/MovingObject.hpp",
+		"/home/andrea/Desktop/Projects/rhs1415/VideoTracker/CMakeLists.txt",
+		"/home/andrea/Desktop/Projects/rhs1415/VideoTracker/hungarian.cpp",
 		"/home/andrea/Documents/rhs1415/VideoTracker/CMakeLists.txt",
 		"/home/andrea/Documents/rhs1415/VideoTracker/hungarian.cpp",
 		"/home/andrea/Documents/rhs1415/HSVFilter/CMakeLists.txt",
@@ -277,7 +246,7 @@
 	],
 	"find":
 	{
-		"height": 41.0
+		"height": 43.0
 	},
 	"find_in_files":
 	{
@@ -291,6 +260,11 @@
 		"case_sensitive": false,
 		"find_history":
 		[
+			"detectObjects",
+			"std::",
+			"cv::",
+			"std::",
+			"cv::",
 			"-std",
 			"rhs",
 			"Path",
@@ -311,6 +285,7 @@
 		"regex": false,
 		"replace_history":
 		[
+			"",
 			"img_quad",
 			"addr_info",
 			"server_info"
@@ -324,7 +299,7 @@
 	"groups":
 	[
 		{
-			"selected": 2,
+			"selected": 4,
 			"sheets":
 			[
 				{
@@ -333,107 +308,79 @@
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 6297,
+						"buffer_size": 6487,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								4350,
-								4350
+								3145,
+								3145
 							]
 						],
 						"settings":
 						{
-							"auto_name": "tracker2.cpp",
 							"syntax": "Packages/C++/C++.tmLanguage",
 							"translate_tabs_to_spaces": false
 						},
 						"translation.x": 0.0,
-						"translation.y": 2040.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 2,
-					"type": "text"
-				},
-				{
-					"buffer": 1,
-					"file": "VideoTracker/CMakeLists.txt",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 445,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								445,
-								445
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/Text/Plain text.tmLanguage"
-						},
-						"translation.x": 0.0,
-						"translation.y": 0.0,
+						"translation.y": 1906.0,
 						"zoom_level": 1.0
 					},
 					"stack_index": 3,
 					"type": "text"
 				},
 				{
-					"buffer": 2,
-					"file": "VideoTracker/hungarian.cpp",
+					"buffer": 1,
+					"file": "VideoTracker/tracker.cpp",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 16887,
+						"buffer_size": 6766,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								3234,
-								3234
+								163,
+								163
 							]
 						],
 						"settings":
 						{
 							"syntax": "Packages/C++/C++.tmLanguage",
-							"translate_tabs_to_spaces": false
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
 						},
 						"translation.x": 0.0,
-						"translation.y": 1759.0,
+						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 1,
+					"stack_index": 2,
 					"type": "text"
 				},
 				{
-					"buffer": 3,
-					"file": "VideoTracker/hungarian.hpp",
+					"buffer": 2,
+					"file": "VideoTracker/IDetector.hpp",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 222,
+						"buffer_size": 288,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								92,
-								92
+								261,
+								261
 							]
 						],
 						"settings":
 						{
-							"auto_name": "hungarian.hpp",
+							"auto_name": "IDetector.hpp",
 							"syntax": "Packages/C++/C++.tmLanguage"
 						},
 						"translation.x": 0.0,
@@ -444,78 +391,49 @@
 					"type": "text"
 				},
 				{
-					"buffer": 4,
-					"file": "VideoTracker/Timer.hpp",
+					"buffer": 3,
+					"file": "VideoTracker/BackgroundSubtractionBasedDetector.hpp",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 586,
+						"buffer_size": 1104,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								92,
-								92
+								1096,
+								1096
 							]
 						],
 						"settings":
 						{
-							"syntax": "Packages/C++/C++.tmLanguage",
-							"translate_tabs_to_spaces": false
+							"auto_name": "BackgroundSubtractionBasedDetector.hpp",
+							"syntax": "Packages/C++/C++.tmLanguage"
 						},
 						"translation.x": 0.0,
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 7,
+					"stack_index": 1,
 					"type": "text"
 				},
 				{
-					"buffer": 5,
-					"file": "VideoTracker/server.cpp",
+					"buffer": 4,
+					"file": "VideoTracker/ColorBasedDetector.hpp",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 2382,
+						"buffer_size": 1184,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								2010,
-								2010
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/C++/C++.tmLanguage",
-							"translate_tabs_to_spaces": false
-						},
-						"translation.x": 0.0,
-						"translation.y": 510.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 5,
-					"type": "text"
-				},
-				{
-					"buffer": 6,
-					"file": "VideoTracker/calibration.hpp",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 279,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								267,
-								267
+								697,
+								697
 							]
 						],
 						"settings":
@@ -526,131 +444,7 @@
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 9,
-					"type": "text"
-				},
-				{
-					"buffer": 7,
-					"file": "VideoTracker/calibration.cpp",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 4085,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								3457,
-								3457
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/C++/C++.tmLanguage",
-							"tab_size": 4,
-							"translate_tabs_to_spaces": true
-						},
-						"translation.x": 0.0,
-						"translation.y": 918.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 6,
-					"type": "text"
-				}
-			]
-		},
-		{
-			"selected": 0,
-			"sheets":
-			[
-				{
-					"buffer": 8,
-					"file": "VideoTracker/MovingObject.hpp",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 2027,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								799,
-								799
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/C++/C++.tmLanguage",
-							"translate_tabs_to_spaces": true
-						},
-						"translation.x": 0.0,
-						"translation.y": 0.0,
-						"zoom_level": 1.0
-					},
 					"stack_index": 0,
-					"type": "text"
-				},
-				{
-					"buffer": 9,
-					"file": "Homography/main.cpp",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 1622,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								394,
-								394
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/C++/C++.tmLanguage",
-							"translate_tabs_to_spaces": false
-						},
-						"translation.x": 0.0,
-						"translation.y": 0.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 8,
-					"type": "text"
-				},
-				{
-					"buffer": 10,
-					"file": "VideoTracker/ColorBasedDetector.hpp",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 1140,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								1047,
-								1047
-							]
-						],
-						"settings":
-						{
-							"auto_name": "ColorBasedFilter.hpp",
-							"syntax": "Packages/C++/C++.tmLanguage",
-							"translate_tabs_to_spaces": false
-						},
-						"translation.x": 0.0,
-						"translation.y": 0.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 10,
 					"type": "text"
 				}
 			]
@@ -673,18 +467,11 @@
 				0,
 				1,
 				1
-			],
-			[
-				1,
-				0,
-				2,
-				1
 			]
 		],
 		"cols":
 		[
 			0.0,
-			0.579166666667,
 			1.0
 		],
 		"rows":
@@ -706,7 +493,7 @@
 	"project": "RHS.sublime-project",
 	"replace":
 	{
-		"height": 78.0
+		"height": 82.0
 	},
 	"save_all_on_build": true,
 	"select_file":
@@ -736,7 +523,7 @@
 		],
 		"width": 563.0
 	},
-	"selected_group": 1,
+	"selected_group": 0,
 	"settings":
 	{
 	},
@@ -744,7 +531,7 @@
 	"show_open_files": true,
 	"show_tabs": true,
 	"side_bar_visible": true,
-	"side_bar_width": 240.0,
+	"side_bar_width": 338.0,
 	"status_bar_visible": true,
 	"template_settings":
 	{
