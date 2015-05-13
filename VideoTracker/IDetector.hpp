@@ -9,6 +9,7 @@ namespace rhs {
 class IDetector {
 public:
 	virtual void DetectObjects(const cv::Mat &image, std::vector< std::vector<cv::Point2i> > &contours_out) = 0;
+	virtual ~IDetector();
 };
 
 } // rhs namespace
