@@ -6,6 +6,8 @@
 #include <vector>
 #include <opencv2/opencv.hpp>
 
+namespace rhs {
+
 class BackgroundSubtractionBasedDetector : public IDetector {
 public:
 	BackgroundSubtractionBasedDetector();
@@ -13,14 +15,18 @@ public:
 
 	void DetectObjects(const cv::Mat &image, std::vector< std::vector<cv::Point2i> > &contours_out);
 
+	cv::Mat maskout;
+
 private:
+	//cv::BackgroundSubtractorMOG2 bgs;
 	cv::BackgroundSubtractorMOG bgs;
 	cv::Mat mask;
 };
 
 // FIXME parameters
 BackgroundSubtractionBasedDetector::BackgroundSubtractionBasedDetector()
-		: bgs(10, 3, 0.6, 20), fgmask() {
+		//: bgs(2000, 36.0f, false), mask() {
+		: bgs(10, 5, 0.8f), mask() {
 
 }
 
@@ -33,9 +39,12 @@ void BackgroundSubtractionBasedDetector::DetectObjects(
 	cv::Mat snapshot;
 	image.copyTo(snapshot);
 	cv::medianBlur(snapshot, snapshot, 5);
-	bgs(snapshot, mask);
+	bgs(snapshot, maskout);
+	maskout.copyTo(mask);
 	cv::morphologyEx(mask, mask, cv::MORPH_OPEN, cv::getStructuringElement(cv::MORPH_RECT,cv::Size(5,5)));
 	cv::findContours(mask, contours_out, CV_RETR_EXTERNAL, CV_CHAIN_APPROX_SIMPLE);
 }
+
+} // rhs namespace
 
 #endif

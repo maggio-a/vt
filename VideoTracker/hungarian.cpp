@@ -105,6 +105,7 @@ long dist(cv::Point2f p1, cv::Point2f p2) {
 	return std::sqrt(diff.x*diff.x + diff.y*diff.y);
 }
 
+//FIXME 1000
 vector<size_t> ComputeMatching(vector<cv::Point2f> predictions, vector<cv::Point2f> detections) {
 	assert(predictions.size() > 0 && detections.size() > 0);
 	size_t n = predictions.size();
@@ -114,30 +115,30 @@ vector<size_t> ComputeMatching(vector<cv::Point2f> predictions, vector<cv::Point
 		*(table + i) = new cell[m];
 		for (size_t j = 0; j < m; j++) {
 			if (j < detections.size())
-				*(*(table + i) + j) = (cell) dist(predictions[i], detections[j]);
+				*(*(table + i) + j) = cell(dist(predictions[i], detections[j]));
 			else
 				*(*(table + i) + j) = 1000;
 		}
 	}
-	cout << "asd";
+	cout << "\nMatching table:\n";
 	print_asd(table, n, m, 0);
 	fflush(stdout);
 	ssize_t **assignment = kuhn_match(table, n, m);
-	vector<size_t> assign(n, n+1); //initialize to n+1 (invalid index)
+	vector<size_t> assign(n, m); //initialize to m (invalid prediction index)
 	for (size_t i = 0; i < n; ++i) {
+		size_t ipred = *(*(assignment + i));
+		size_t idet = *(*(assignment + i) + 1);
 		// ensure safe conversion from ssize_t
-		assert((*(*(assignment + i))) >= 0 && (*(*(assignment + i) + 1)) >= 0);
-		size_t i1 = *(*(assignment + i));
-		size_t i2 = *(*(assignment + i) + 1);
-		assign[i1] = i2;
+        assert (ipred < n && idet < m);
+		assign[ipred] = idet;
 		delete[] *(assignment + i);
 		delete[] *(table + i);
 	}
 	delete[] assignment;
 	delete[] table;
-	// assert assignments
+	// assert every prediction got an assignment
 	for (size_t i = 0; i < n; ++i) {
-		assert(assign[i] != n+1);
+		assert(assign[i] != m);
 	}
 
 	return assign;

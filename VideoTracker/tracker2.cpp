@@ -6,6 +6,7 @@
   #include <raspicam/raspicam_cv.h>
 #endif
 
+#include "BackgroundSubtractionBasedDetector.hpp"
 #include "ColorBasedDetector.hpp"
 #include "MovingObject.hpp"
 #include "Timer.hpp"
@@ -101,7 +102,8 @@ void *tracker2(void *arg) {
 
 	// First detection to initialize the control structures
 	cam.read(image);
-	rhs::ColorBasedDetector detector(Scalar(H_MIN,S_MIN,V_MIN), Scalar(H_MAX,S_MAX,V_MAX));
+	//rhs::ColorBasedDetector detector(Scalar(H_MIN,S_MIN,V_MIN), Scalar(H_MAX,S_MAX,V_MAX));
+	rhs::BackgroundSubtractionBasedDetector detector;
 	detector.DetectObjects(image, contours);
 	// For each object set up a kalman filter
 	vector<rhs::MovingObject> objects;
@@ -111,15 +113,17 @@ void *tracker2(void *arg) {
 		float x = bbox.x + bbox.width / 2.0f;
 		float y = bbox.y + bbox.height / 2.0f;
 		stringstream ss;
-		ss << "OBJ " << (objectCount++);
+		ss << "OBJ   " << (objectCount++);
 		objects.push_back(rhs::MovingObject(ss.str(), x, y));
 	}
 
 	float dt;
 	Mat measurement(2, 1, CV_32F);
 	int font = FONT_HERSHEY_PLAIN;
-    double font_scale = 0.8;
+    double font_scale = 1.0;
+    int c = 0;
 	while (tracking) {
+		c++;
 		// Grab a frame
 		cam.grab();
 		dt = timer.timeElapsed();
@@ -152,12 +156,22 @@ void *tracker2(void *arg) {
 					if (j < detections.size()) {
 						Point2f match = detections[j];
 						Point2f groundPoint = transformPoint(match, img2world);
+
+		#define drawCross( center, color, d )                                 \
+			cv::line( image, cv::Point( center.x - d, center.y - d ),                \
+						 cv::Point( center.x + d, center.y + d ), color, 1, CV_AA, 0); \
+			cv::line( image, cv::Point( center.x + d, center.y - d ),                \
+						 cv::Point( center.x - d, center.y + d ), color, 1, CV_AA, 0 )
+		drawCross(Point2i(match.x,match.y), cv::Scalar(255, 120, 0), 5);
+
+
+
 						putText(image, tracker.tag(), Point2i(match.x,match.y), font, font_scale, Scalar(0,255,0));
 						stringstream xWorld, yWorld;
 						xWorld << "xw: " << groundPoint.x;
 						yWorld << "yw: " << groundPoint.y;
-						putText(image, xWorld.str(), Point2i(match.x,match.y+12), font, font_scale, Scalar(0,255,0));
-						putText(image, yWorld.str(), Point2i(match.x,match.y+24), font, font_scale, Scalar(0,255,0));
+						putText(image, xWorld.str(), Point2i(match.x,match.y+15), font, font_scale, Scalar(0,255,0));
+						putText(image, yWorld.str(), Point2i(match.x,match.y+30), font, font_scale, Scalar(0,255,0));
 						
 						measurement.at<float>(0) = match.x;
 						measurement.at<float>(1) = match.y;
@@ -172,21 +186,18 @@ void *tracker2(void *arg) {
 			for (size_t j = 0; j < detections.size(); ++j) {
 				if (used.find(j) == used.end()) {
 					stringstream ss;
-					ss << "obj " << (objectCount++);
+					ss << "OBJ   " << (objectCount++);
 					objects.push_back(rhs::MovingObject(ss.str(), detections[j].x, detections[j].y));
 				}
 			}
 		}
 
-		/* plot points
-		#define drawCross( center, color, d )                                 \
-			cv::line( image, cv::Point( center.x - d, center.y - d ),                \
-						 cv::Point( center.x + d, center.y + d ), color, 1, CV_AA, 0); \
-			cv::line( image, cv::Point( center.x + d, center.y - d ),                \
-						 cv::Point( center.x - d, center.y + d ), color, 1, CV_AA, 0 )
-		drawCross(predictedPoint, cv::Scalar(255, 120, 0), 5);*/
-
 		imshow(windowName, image);
+		imshow("BGS", detector.maskout);
+		/*if (c > 150 && c % 10) {
+			stringstream ss; ss << "snapshot" << c << ".jpg";
+			imwrite(ss.str(), image);
+		}*/
 
 		// if trackers lost their object for more than a given threshold, remove them
 		objects.erase(remove_if(objects.begin(), objects.end(), rhs::outdated(2.0f)), objects.end());
