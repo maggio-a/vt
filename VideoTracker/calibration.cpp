@@ -17,8 +17,8 @@ using std::vector;
 
 using namespace cv;
 
-static const int FRAME_WIDTH = 640;
-static const int FRAME_HEIGHT = 480;
+static const int FRAME_WIDTH = 320;
+static const int FRAME_HEIGHT = 240;
 
 static const string windowName = "Calibration";
 

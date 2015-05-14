@@ -95,7 +95,7 @@
 			"file": "VideoTracker/IDetector.hpp",
 			"settings":
 			{
-				"buffer_size": 288,
+				"buffer_size": 311,
 				"line_ending": "Unix",
 				"name": "IDetector.hpp"
 			}
@@ -375,15 +375,15 @@
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 288,
+						"buffer_size": 311,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								288,
-								288
+								280,
+								280
 							]
 						],
 						"settings":

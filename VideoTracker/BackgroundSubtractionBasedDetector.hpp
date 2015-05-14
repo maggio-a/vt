@@ -39,10 +39,11 @@ void BackgroundSubtractionBasedDetector::DetectObjects(
 	cv::Mat snapshot;
 	image.copyTo(snapshot);
 	cv::medianBlur(snapshot, snapshot, 5);
-	bgs(snapshot, maskout);
-	maskout.copyTo(mask);
-	cv::morphologyEx(mask, mask, cv::MORPH_OPEN, cv::getStructuringElement(cv::MORPH_RECT,cv::Size(5,5)));
-	cv::findContours(mask, contours_out, CV_RETR_EXTERNAL, CV_CHAIN_APPROX_SIMPLE);
+	bgs(snapshot, mask);
+	if (image.size().width >= 640 && image.size().height>= 480)
+		cv::morphologyEx(mask, mask, cv::MORPH_OPEN, cv::getStructuringElement(cv::MORPH_RECT,cv::Size(5,5)));
+	mask.copyTo(maskout);
+	cv::findContours(mask, contours_out, CV_RETR_EXTERNAL, CV_CHAIN_APPROX_NONE);
 }
 
 } // rhs namespace

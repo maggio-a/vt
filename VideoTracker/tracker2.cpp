@@ -33,8 +33,8 @@ static int S_MAX = 256;
 static int V_MIN = 94;
 static int V_MAX = 256;
 
-static const int FRAME_WIDTH = 640;
-static const int FRAME_HEIGHT = 480;
+static const int FRAME_WIDTH = 320;
+static const int FRAME_HEIGHT = 240;
 
 //const int MIN_OBJECT_AREA = 20*20;
 //const int MAX_OBJECT_AREA = FRAME_HEIGHT*FRAME_WIDTH/1.5;
@@ -129,6 +129,8 @@ void *tracker2(void *arg) {
 		dt = timer.timeElapsed();
 		timer.restart();
 		cam.retrieve(image);
+
+		cout << dt << endl;
 
 		detector.DetectObjects(image, contours);
 		vector<Point2f> predictions; // coupled with the objects array
