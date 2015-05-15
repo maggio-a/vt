@@ -4,6 +4,6 @@
 #include <vector>
 #include <opencv2/core/core.hpp>
 
-std::vector<size_t> ComputeMatching(std::vector<cv::Point2f> predictions, std::vector<cv::Point2f> detections);
+std::vector<size_t> ComputeMatching(const std::vector<cv::Point2f> predictions, const std::vector<cv::Point2f> detections);
 
 #endif

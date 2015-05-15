@@ -17,21 +17,21 @@ int main(int argc, char *argv[]) {
 	std::auto_ptr<Socket> channel(new Socket(address, 12345));
 
 	string s;
-	msg_code cmd = STOP_CAMERA;
+	//msg_code cmd = STOP_CAMERA;
 
 	for (;;) {
 		cin >> s;
 		if (s == "start") {
-			cmd = START_CAMERA;
+			channel->Send(rhs::Message(rhs::START_CAMERA, string("Hello!")));
 		} else if (s == "stop" || s == "close") {
-			cmd = STOP_CAMERA;
+			channel->Send(rhs::Message(rhs::STOP_CAMERA));
 		} else if (s == "quit") {
-			cmd = QUIT;
+			channel->Send(rhs::Message(rhs::QUIT));
 		} else {
 			cerr << "Unknown command '" << s << "'" << endl;
 		}
 
-		channel->send(&cmd, sizeof(cmd));
+		//channel->send(&cmd, sizeof(cmd));
 		if (s == "close")
 			break;
 	}

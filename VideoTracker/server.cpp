@@ -8,6 +8,7 @@
 #include "Socket.hpp"
 #include "thread.hpp"
 #include "msg.hpp"
+#include "Timer.hpp"
 
 using std::cout;
 using std::cerr;
@@ -17,6 +18,8 @@ extern void *tracker(void *arg);
 extern void *tracker2(void *arg);
 
 bool tracking = false;
+std::auto_ptr<Socket> channel(0);
+rhs::Timer live();
 
 void help(char *program) {
 	std::cout << "Usage: " << program << " [-c width height]" << std::endl
@@ -54,7 +57,7 @@ int main(int argc, char *argv[]) {
 
 	// need to try-catch
 	std::auto_ptr<ServerSocket> server(new ServerSocket(12345, 5));
-	std::auto_ptr<Socket> channel(server->accept());
+	channel.reset(server->accept());
 
 	bool done = false;
 
@@ -63,23 +66,28 @@ int main(int argc, char *argv[]) {
 	cout << "Camera server running" << endl;
 
 	while (!done) {
-		msg_code cmd;
+		//msg_code cmd;
+		rhs::Message msg(0); cout << "FIXME :(" << endl;
 
 		try {
-			cout << "receiving";
-			channel->recv(&cmd, sizeof(cmd));
-			cout << "cmd" << endl;
+			cout << "receiving ";
+			//channel->recv(&cmd, sizeof(cmd));
+			msg = channel->Receive();
+			cout << "cmd " << msg.type << endl;
 		}
 		catch (int status) {
-			cmd = QUIT; // forces quit
+			//cmd = QUIT; // forces quit
+			msg.type = rhs::QUIT; // forces quit
 			if (status < 0) {
 				errno = status;
 				perror("recv");
 			} 
 		}
 
-		switch (cmd) {
-		case START_CAMERA:
+		switch (msg.type) {
+		case rhs::START_CAMERA:
+			cout << msg.payload << endl;
+			live.restart()
 			if (!tracking) {
 				tracking = true;
 				try {
@@ -92,9 +100,9 @@ int main(int argc, char *argv[]) {
 				}
 			}
 			break;
-		case QUIT:
+		case rhs::QUIT:
 			done = true;
-		case STOP_CAMERA:
+		case rhs::STOP_CAMERA:
 			if (tracking) {
 				tracking = false;
 				cam_service->join();

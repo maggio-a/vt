@@ -10,6 +10,8 @@
 #include <arpa/inet.h>
 #include <unistd.h>
 
+#include "msg.hpp"
+
 class ServerSocket;
 
 class Socket {
@@ -18,7 +20,11 @@ public:
 	~Socket();
 
 	void recv(void *base, size_t n);
-	void send(void *base, size_t n);
+	void send(const void *base, size_t n);
+
+	void Send(const rhs::Message &msg);
+	rhs::Message Receive();
+
 	void close();
 	
 private:
@@ -27,11 +33,11 @@ private:
 	Socket(int fd); // used by ServerSocket on accept() return
 
 	int _fd;
-	int _err; // remove this
 	bool _closed;
+	int _err; // remove this
 };
 
-Socket::Socket(std::string addr, int p) {
+Socket::Socket(std::string addr, int p) : _err(0) {
 	struct sockaddr_in addr_info;
 	int r;
 
@@ -52,7 +58,7 @@ Socket::Socket(std::string addr, int p) {
 	_closed = false;
 }
 
-Socket::Socket(int fd) : _fd(fd) { }
+Socket::Socket(int fd) : _fd(fd), _closed(false), _err(0) { }
 
 Socket::~Socket() {
 	if (!_closed) {
@@ -62,6 +68,25 @@ Socket::~Socket() {
 			std::cerr << "Failed closing socket" << std::endl;
 			perror("close");
 		}
+	}
+}
+
+rhs::Message Socket::Receive() {
+	rhs::message_t type;
+	uint16_t sz;
+	recv(&type, 2);
+	recv (&sz, 2);
+	type = ntohs(type);
+	sz = ntohs(sz);
+	if (sz > 0) {
+		char *payload = new char[sz];
+		recv(payload, sz);
+		payload[sz-1] = '\0';
+		rhs::Message m(type, std::string(payload));
+		delete[] payload;
+		return m;
+	} else {
+		return rhs::Message(type);
 	}
 }
 
@@ -75,8 +100,18 @@ void Socket::recv(void *base, size_t n) {
 	}
 }
 
+void Socket::Send(const rhs::Message &m) {
+	rhs::message_t type = htons(m.type);
+	uint16_t host_sz = m.payload.size();
+	uint16_t sz = (host_sz > 0) ? htons(host_sz+1) : htons(0);
+	send(&type, 2);
+	send(&sz, 2);
+	if (host_sz > 0)
+		send(m.payload.c_str(), host_sz+1);
+}
+
 // FIXME needs integrity checks
-void Socket::send(void *base, size_t n) {
+void Socket::send(const void *base, size_t n) {
 	if (::send(_fd, base, n, 0) < 0) {
 		perror("send");
 		throw _err = errno;
