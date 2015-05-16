@@ -18,21 +18,12 @@ const message_t OBJECT_DATA   = 4U;
 class Message {
 public:
 
-	Message(uint16_t type, std::string pl=std::string());
-	~Message();
+	Message(uint16_t t, std::string pl=std::string()) : type(t), payload(pl) {  }
+	~Message() {  }
 
 	uint16_t type;
 	std::string payload;
 };
-
-Message::Message(uint16_t t, std::string pl) 
-		: type(t), payload(pl) {
-
-}
-
-Message::~Message() {
-
-}
 
 }
 

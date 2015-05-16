@@ -1,5 +1,6 @@
 #include <iostream>
 #include <memory>
+#include <string>
 #include <cstdlib>
 #include <unistd.h>
 
@@ -19,7 +20,7 @@ extern void *tracker2(void *arg);
 
 bool tracking = false;
 std::auto_ptr<Socket> channel(0);
-rhs::Timer live();
+rhs::Timer live;
 
 void help(char *program) {
 	std::cout << "Usage: " << program << " [-c width height]" << std::endl
@@ -49,8 +50,8 @@ int main(int argc, char *argv[]) {
 		if (optind > argc-2) {
 			std::exit(EXIT_FAILURE);
 		}
-		float width = strtod(argv[optind++], 0);
-		float height = strtod(argv[optind++], 0);
+		float width = std::stof(argv[optind++]);
+		float height = std::stof(argv[optind++]);
 		rhs::performCalibration(width, height);
 		std::exit(EXIT_SUCCESS);
 	}
@@ -87,11 +88,11 @@ int main(int argc, char *argv[]) {
 		switch (msg.type) {
 		case rhs::START_CAMERA:
 			cout << msg.payload << endl;
-			live.restart()
+			live.restart();
 			if (!tracking) {
 				tracking = true;
 				try {
-					cam_service = new thread(tracker2, NULL);
+					cam_service = new thread(tracker2, 0);
 				}
 				catch (int error) {
 					cerr << "disaster" << endl;

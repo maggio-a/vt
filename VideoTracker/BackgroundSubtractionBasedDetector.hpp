@@ -18,16 +18,14 @@ public:
 	cv::Mat maskout;
 
 private:
-	//cv::BackgroundSubtractorMOG2 bgs;
-	cv::BackgroundSubtractorMOG bgs;
+	cv::BackgroundSubtractorMOG2 bgs;
 	cv::Mat mask;
 };
 
 // FIXME parameters
 BackgroundSubtractionBasedDetector::BackgroundSubtractionBasedDetector()
-		//: bgs(2000, 36.0f, false), mask() {
-		: bgs(10, 5, 0.8f), mask() {
-
+		: bgs(100, 16.0f, true), mask() {
+	//bgs.set("nShadowDetection", 0);
 }
 
 BackgroundSubtractionBasedDetector::~BackgroundSubtractionBasedDetector() {
@@ -39,7 +37,7 @@ void BackgroundSubtractionBasedDetector::DetectObjects(
 	cv::Mat snapshot;
 	image.copyTo(snapshot);
 	cv::medianBlur(snapshot, snapshot, 5);
-	bgs(snapshot, mask);
+	bgs(snapshot, mask, 0);
 	if (image.size().width >= 640 && image.size().height>= 480)
 		cv::morphologyEx(mask, mask, cv::MORPH_OPEN, cv::getStructuringElement(cv::MORPH_RECT,cv::Size(5,5)));
 	mask.copyTo(maskout);

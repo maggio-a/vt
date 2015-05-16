@@ -120,9 +120,8 @@ vector<size_t> ComputeMatching(vector<cv::Point2f> predictions, vector<cv::Point
 				*(*(table + i) + j) = 1000;
 		}
 	}
-	cout << "\nMatching table:\n";
-	print_asd(table, n, m, 0);
-	fflush(stdout);
+	//cout << "\nMatching table:\n";
+	//print_asd(table, n, m, 0);
 	ssize_t **assignment = kuhn_match(table, n, m);
 	vector<size_t> assign(n, m); //initialize to m (invalid prediction index)
 	for (size_t i = 0; i < n; ++i) {

@@ -1,18 +1,21 @@
 #include <iostream>
 #include <string>
-#include <cstdio>
 #include <memory>
 #include <opencv2/opencv.hpp>
 #ifdef __arm__
   #include <raspicam/raspicam_cv.h>
 #endif
 
+#include "Socket.hpp"
 #include "BackgroundSubtractionBasedDetector.hpp"
 #include "ColorBasedDetector.hpp"
 #include "MovingObject.hpp"
 #include "Timer.hpp"
 #include "Snapshot.hpp"
 #include "calibration.hpp"
+
+
+#include <sstream>
 
 extern bool tracking;
 extern std::auto_ptr<Socket> channel;
@@ -29,8 +32,8 @@ static int S_MAX = 256;
 static int V_MIN = 94;
 static int V_MAX = 256;
 
-static const int FRAME_WIDTH = 320;
-static const int FRAME_HEIGHT = 240;
+static const int FRAME_WIDTH = 640;
+static const int FRAME_HEIGHT = 480;
 
 //const int MIN_OBJECT_AREA = 20*20;
 //const int MAX_OBJECT_AREA = FRAME_HEIGHT*FRAME_WIDTH/1.5;
@@ -42,7 +45,6 @@ static const string windowName3 = "After Morphological Operations";
 
 
 Point2f transformPoint(Point2f src, const Mat &transform) {
-	cout << "REFACTOR ME" << endl;
 	vector<double> tmp(3);
 	tmp[0] = src.x; tmp[1] = src.y; tmp[2] = 1.0;
 
@@ -99,6 +101,7 @@ void *tracker2(void *arg) {
 	rhs::BackgroundSubtractionBasedDetector detector;
 
 	float timestamp;
+	int c=1;
 	while (tracking) {
 		cam.grab();
 		timestamp = live.timeElapsed();
@@ -106,16 +109,24 @@ void *tracker2(void *arg) {
 
 		detector.DetectObjects(image, contours);
 
-		Snapshot snap(timestamp);
+		rhs::Snapshot snap(timestamp);
 		for (size_t j = 0; j < contours.size(); ++j) {
 			Rect b = boundingRect(contours[j]);
 			Point2f imgPoint(b.x + b.width / 2.0f, b.y + b.height / 2.0f);
-			Point2d groundPoint = transformPoint(imgPoint, img2world)
+			Point2d groundPoint = transformPoint(imgPoint, img2world);
 			snap.addObject(groundPoint);
 		}
 
-		Message msg(rhs::OBJECT_DATA, snap.str());
+		rhs::Message msg(rhs::OBJECT_DATA, snap.str());
 		channel->Send(msg);
+
+		imshow("mask", detector.maskout);
+		int keyCode = waitKey(10);
+		if (keyCode == ' ' || (keyCode & 0xff) == ' ') {
+			stringstream ss;
+			ss << "shot" << c++ << ".png";
+			imwrite(ss.str(), image);
+		}
 	}
 
 	cam.release();

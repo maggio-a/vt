@@ -10,7 +10,7 @@ namespace rhs {
 
 class MovingObject {
 public:
-    MovingObject(std::string tag, float x, float y);
+    MovingObject(std::string tag, cv::Point2f pt);
     ~MovingObject();
 
     cv::Point2f predictPosition(float dt);
@@ -24,7 +24,7 @@ private:
     Timer lastMeasurement;
 };
 
-MovingObject::MovingObject(std::string tag, float x, float y)
+MovingObject::MovingObject(std::string tag, cv::Point2f pt)
         : kf(4, 2, 0, CV_32F), _tag(tag), lastMeasurement() {
 
     /* transition matrix will be updated at each step:
@@ -44,7 +44,7 @@ MovingObject::MovingObject(std::string tag, float x, float y)
     cv::setIdentity(kf.processNoiseCov, cv::Scalar(1e-2));
     cv::setIdentity(kf.measurementNoiseCov, cv::Scalar(1e-1));
     cv::setIdentity(kf.errorCovPost, cv::Scalar::all(1));
-    kf.statePost = *(cv::Mat_<float>(4,1) << x, y, 0, 0);
+    kf.statePost = *(cv::Mat_<float>(4,1) << pt.x, pt.y, 0, 0);
 }
 
 MovingObject::~MovingObject() {
