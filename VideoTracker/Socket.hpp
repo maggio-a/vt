@@ -5,6 +5,10 @@
 #include "msg.hpp"
 
 
+namespace rhs {
+	const int SERVER_PORT_DEFAULT = 12345;
+}
+
 class ServerSocket;
 
 
