@@ -35,32 +35,38 @@ int main(int argc, char *argv[]) {
 	vector<string> tokens;
 	//msg_code cmd = STOP_CAMERA;
 
+	bool tracking = false;
+
 	for (;;) {
 		string cmd, s;
 		getline(cin, s);
 		split(s, ' ', tokens);
 		cmd = tokens[0];
 		if (cmd == "connect") {
-			if (tokens.size() < 2) {
+			if (tracking) {
+				cerr << "Cannot add a new connection while tracking" << '/n';
+			} else if (tokens.size() < 2) {
 				cerr << "Usage: connect server [port] (default port: " << rhs::SERVER_PORT_DEFAULT << ")\n";
 			} else {
 				string address = tokens[1];
 				int port = tokens.size() > 2 ? stoi(tokens[2]) : rhs::SERVER_PORT_DEFAULT;
 				connections->push_back(unique_ptr<Socket>(new Socket(address, port)));
 			}
-		} else if (cmd == "start") {
+		} else if (cmd == "start" && !tracking) {
 			receiver.reset(new thread(Receiver, 0));
-		} else if (cmd == "stop" || cmd == "close") {
+			tracking = true;
+		} else if ((cmd == "stop" && tracking) {
 			channel->Send(rhs::Message(rhs::STOP_CAMERA));
-		} else if (cmd == "quit") {
-			channel->Send(rhs::Message(rhs::QUIT));
+			tracking = false;
+		} else if (cmd == "close") {
+			if (tracking) {
+				channel->Send(rhs::Message(rhs::STOP_CAMERA));
+				tracking = false;
+			}
+			break;
 		} else {
 			cerr << "Unknown command '" << cmd << "'" << endl;
 		}
-
-		//channel->send(&cmd, sizeof(cmd));
-		if (cmd == "close")
-			break;
 	}
 
 	channel->close();
