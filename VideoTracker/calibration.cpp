@@ -62,7 +62,8 @@ void rhs::performCalibration(float width, float height) {
     double font_scale = 0.8;
     int text_y = FRAME_HEIGHT - 10;
     while (true) {
-        cam.read(image);
+        cam.grab();
+        cam.retrieve(image);
         
         circle(image, last, 5, Scalar(255,255,0), 1, CV_AA);
         if (img_quad.size() > 0) {

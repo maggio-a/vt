@@ -20,7 +20,8 @@ extern void *Receiver(void *arg);
 
 int main(int argc, char *argv[]) {
 	// need to try-catch
-	string address = "127.0.0.1";
+	//string address = "127.0.0.1";
+	string address = "192.168.1.72";
 	channel.reset(new Socket(address, 12345));
 
 	string s;

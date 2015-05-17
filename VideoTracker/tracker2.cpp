@@ -92,8 +92,9 @@ void *tracker2(void *arg) {
 
 	Mat image;
 	// warm up camera
-	for (size_t i = 0; i < 10; ++i) {
-		cam.read(image);
+	for (size_t i = 0; i < 60; ++i) {
+		cam.grab();
+		cam.retrieve(image);
 	}
 	vector< vector<Point2i> > contours;
 
@@ -120,13 +121,13 @@ void *tracker2(void *arg) {
 		rhs::Message msg(rhs::OBJECT_DATA, snap.str());
 		channel->Send(msg);
 
-		imshow("mask", detector.maskout);
+		/*imshow("mask", detector.maskout);
 		int keyCode = waitKey(10);
 		if (keyCode == ' ' || (keyCode & 0xff) == ' ') {
 			stringstream ss;
 			ss << "shot" << c++ << ".png";
 			imwrite(ss.str(), image);
-		}
+		}*/
 	}
 
 	cam.release();
