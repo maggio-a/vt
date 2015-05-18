@@ -53,7 +53,9 @@ int main(int argc, char *argv[]) {
 				connections->push_back(unique_ptr<Socket>(new Socket(address, port)));
 			}
 		} else if (cmd == "start") {
-			if (tracking) {
+			if (connections->size() == 0) {
+				cout << "No active connections\n";
+			} else if (tracking) {
 				cout << "System already tracking\n";
 			} else {
 				receiver.reset(new thread(Receiver, 0));

@@ -91,18 +91,19 @@ void *tracker2(void *arg) {
 	fs.release();
 
 	Mat image;
-	// warm up camera
-	for (size_t i = 0; i < 60; ++i) {
+	// warm up camera (2 seconds)
+	rhs::Timer tlocal;
+	while(tlocal.timeElapsed() < 2.0f) {
 		cam.grab();
-		cam.retrieve(image);
 	}
 	vector< vector<Point2i> > contours;
 
-	//rhs::ColorBasedDetector detector(Scalar(H_MIN,S_MIN,V_MIN), Scalar(H_MAX,S_MAX,V_MAX));
-	rhs::BackgroundSubtractionBasedDetector detector;
+	rhs::ColorBasedDetector detector(Scalar(H_MIN,S_MIN,V_MIN), Scalar(H_MAX,S_MAX,V_MAX));
+	//rhs::BackgroundSubtractionBasedDetector detector;
 
 	float timestamp;
 	int c=1;
+	tlocal.restart();
 	while (tracking) {
 		cam.grab();
 		timestamp = live.timeElapsed();
@@ -121,6 +122,8 @@ void *tracker2(void *arg) {
 		rhs::Message msg(rhs::OBJECT_DATA, snap.str());
 		channel->Send(msg);
 
+		c++;
+
 		/*imshow("mask", detector.maskout);
 		int keyCode = waitKey(10);
 		if (keyCode == ' ' || (keyCode & 0xff) == ' ') {
@@ -129,6 +132,8 @@ void *tracker2(void *arg) {
 			imwrite(ss.str(), image);
 		}*/
 	}
+
+	cout << "Retrieved " << c << " frames in " << tlocal.timeElapsed() << " seconds.\n";
 
 	cam.release();
 
