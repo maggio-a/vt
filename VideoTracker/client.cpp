@@ -59,16 +59,18 @@ int main(int argc, char *argv[]) {
 				receiver.reset(new thread(Receiver, 0));
 				tracking = true;
 			}
-		} else if ((cmd == "stop") {
+		} else if (cmd == "stop") {
 			if (tracking) {
-				channel->Send(rhs::Message(rhs::STOP_CAMERA));
+				for (auto &channel : *connections)
+					channel->Send(rhs::Message(rhs::STOP_CAMERA));
 				tracking = false;
 			} else {
-				cout << "Tracking not started yet!\n"
+				cout << "Tracking not started yet!\n";
 			}
 		} else if (cmd == "close") {
 			if (tracking) {
-				channel->Send(rhs::Message(rhs::STOP_CAMERA));
+				for (auto &channel : *connections)
+					channel->Send(rhs::Message(rhs::STOP_CAMERA));
 				tracking = false;
 			}
 			break;
@@ -77,5 +79,6 @@ int main(int argc, char *argv[]) {
 		}
 	}
 
-	channel->close();
+	for (auto &channel : *connections)
+		channel->close();
 }
