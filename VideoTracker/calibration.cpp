@@ -69,7 +69,8 @@ void rhs::performCalibration(float width, float height) {
         if (img_quad.size() > 0) {
             for (size_t i = 0; i < img_quad.size(); ++i)
                 circle(image, img_quad[i], 5, Scalar(255,255,0), 1, CV_AA);
-            polylines(image, img_quad, true, Scalar(0,255,0), 1, CV_AA);
+            if (img_quad.size() >= 3)  //breaks on the older raspberries otherwise
+                polylines(image, img_quad, true, Scalar(0,255,0), 1, CV_AA);
         }
         putText(image, "TRACING:", Point2i(5,text_y), font, font_scale, Scalar(255,255,255));
         if (tracing)

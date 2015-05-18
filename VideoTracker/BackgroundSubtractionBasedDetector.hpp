@@ -24,7 +24,7 @@ private:
 
 // FIXME parameters
 BackgroundSubtractionBasedDetector::BackgroundSubtractionBasedDetector()
-		: bgs(100, 16.0f, true), mask() {
+		: bgs(100, 16.0f, false), mask() {
 	//bgs.set("nShadowDetection", 0);
 }
 
@@ -36,8 +36,7 @@ void BackgroundSubtractionBasedDetector::DetectObjects(
 		const cv::Mat &image, std::vector< std::vector<cv::Point2i> > &contours_out) {
 	cv::Mat snapshot;
 	image.copyTo(snapshot);
-	cv::medianBlur(snapshot, snapshot, 5);
-	bgs(snapshot, mask, 0);
+	bgs(snapshot, mask);
 	if (image.size().width >= 640 && image.size().height>= 480)
 		cv::morphologyEx(mask, mask, cv::MORPH_OPEN, cv::getStructuringElement(cv::MORPH_RECT,cv::Size(5,5)));
 	mask.copyTo(maskout);
