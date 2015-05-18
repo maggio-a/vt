@@ -132,24 +132,24 @@ int main(int argc, char** argv )
 
         clock_gettime(CLOCK_MONOTONIC, &t_end);
 
-        cout << getTimeDelta(t2, t1) << ", " <<
+        /*cout << getTimeDelta(t2, t1) << ", " <<
                 getTimeDelta(t3, t2) << ", " <<
                 getTimeDelta(t4, t3) << ", " <<
                 getTimeDelta(t5, t4) << ", " <<
                 getTimeDelta(t_end, t5) << ", " <<
-                "Fps: " << 1.0 / getTimeDelta(t_end, t1) << endl;
+                "Fps: " << 1.0 / getTimeDelta(t_end, t1) << endl;*/
 
-        imshow(windowName, image);
-        imshow(windowName1, HSV);
+        //imshow(windowName, image);
+        //imshow(windowName1, HSV);
         imshow(windowName2, stencil);
 
         keyCode = cv::waitKey(1);
-        if (keyCode == 32 || (keyCode & 0xff) == 32 ) {
+        /*if (keyCode == 32 || (keyCode & 0xff) == 32 ) {
             cv::imwrite("hsv.jpg", HSV);
             cv::imwrite("stencil.jpg", stencil);
             cv::imwrite("tracked.jpg", image);
             break;
-        }
+        }*/
     }
 
     cam.release();
