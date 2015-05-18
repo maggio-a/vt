@@ -44,20 +44,28 @@ int main(int argc, char *argv[]) {
 		cmd = tokens[0];
 		if (cmd == "connect") {
 			if (tracking) {
-				cerr << "Cannot add a new connection while tracking" << '/n';
+				cout << "Cannot add a new connection while tracking\n";
 			} else if (tokens.size() < 2) {
-				cerr << "Usage: connect server [port] (default port: " << rhs::SERVER_PORT_DEFAULT << ")\n";
+				cout << "Usage: connect server [port] (default port: " << rhs::SERVER_PORT_DEFAULT << ")\n";
 			} else {
 				string address = tokens[1];
 				int port = tokens.size() > 2 ? stoi(tokens[2]) : rhs::SERVER_PORT_DEFAULT;
 				connections->push_back(unique_ptr<Socket>(new Socket(address, port)));
 			}
-		} else if (cmd == "start" && !tracking) {
-			receiver.reset(new thread(Receiver, 0));
-			tracking = true;
-		} else if ((cmd == "stop" && tracking) {
-			channel->Send(rhs::Message(rhs::STOP_CAMERA));
-			tracking = false;
+		} else if (cmd == "start") {
+			if (tracking) {
+				cout << "System already tracking\n";
+			} else {
+				receiver.reset(new thread(Receiver, 0));
+				tracking = true;
+			}
+		} else if ((cmd == "stop") {
+			if (tracking) {
+				channel->Send(rhs::Message(rhs::STOP_CAMERA));
+				tracking = false;
+			} else {
+				cout << "Tracking not started yet!\n"
+			}
 		} else if (cmd == "close") {
 			if (tracking) {
 				channel->Send(rhs::Message(rhs::STOP_CAMERA));
@@ -65,7 +73,7 @@ int main(int argc, char *argv[]) {
 			}
 			break;
 		} else {
-			cerr << "Unknown command '" << cmd << "'" << endl;
+			cout << "Unknown command '" << cmd << "'\n";
 		}
 	}
 
