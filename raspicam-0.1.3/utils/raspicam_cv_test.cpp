@@ -77,10 +77,20 @@ void processCommandLine ( int argc,char **argv,raspicam::RaspiCam_Cv &Camera ) {
         doTestSpeedOnly=true;
     if ( findParam ( "-ss",argc,argv ) !=-1 )
         Camera.set ( CV_CAP_PROP_EXPOSURE, getParamVal ( "-ss",argc,argv )  );
+
     if ( findParam ( "-wb_r",argc,argv ) !=-1 )
+  #if CV_MINOR_VERSION == 4 && CV_SUBMINOR_VERSION == 11
+        Camera.set ( CV_CAP_PROP_WHITE_BALANCE_V,getParamVal ( "-wb_r",argc,argv )     );
+  #else
         Camera.set ( CV_CAP_PROP_WHITE_BALANCE_RED_V,getParamVal ( "-wb_r",argc,argv )     );
+  #endif
+        
     if ( findParam ( "-wb_b",argc,argv ) !=-1 )
-        Camera.set ( CV_CAP_PROP_WHITE_BALANCE_BLUE_U,getParamVal ( "-wb_b",argc,argv )     );
+  #if CV_MINOR_VERSION == 4 && CV_SUBMINOR_VERSION == 11
+        Camera.set ( CV_CAP_PROP_WHITE_BALANCE_U,getParamVal ( "-wb_r",argc,argv )     );
+  #else
+        Camera.set ( CV_CAP_PROP_WHITE_BALANCE_BLUE_U,getParamVal ( "-wb_r",argc,argv )     );
+  #endif
 
 
 //     Camera.setSharpness ( getParamVal ( "-sh",argc,argv,0 ) );
