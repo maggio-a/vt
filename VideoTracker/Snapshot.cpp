@@ -29,7 +29,10 @@ Snapshot::Snapshot(float timestamp) : tstamp(timestamp), pts() {
 Snapshot::Snapshot(string description) : tstamp(0.0f), pts() {
 	vector<string> tokens;
 	split(description, '#', tokens);
-	tstamp = stof(tokens[0]);
+	tstamp = float( atof(tokens[0].c_str()) );
+	cout << tokens[0].c_str() << "CCCCCCCCCCCCCCCCCCCC" << endl;
+	cout.precision(9);
+	cout << 2.453453 << "AAAAAAAAAAAAAAAAA" << endl;
 	if (tokens.size() > 1) { // reads detected points
 		for (size_t i = 1; i < tokens.size(); ++i) {
 			vector<string> coords;

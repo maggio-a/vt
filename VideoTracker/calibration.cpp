@@ -80,7 +80,7 @@ void rhs::performCalibration(float width, float height) {
         else
             putText(image, "OFF", Point2i(65,text_y), font, font_scale, Scalar(0,0,255));   
         
-        keyCode = waitKey(1);
+        keyCode = waitKey(30);
         if (keyCode == ' ' || (keyCode & 0xff) == ' ') {
             if (img_quad.size() == 4)
                 img_quad.clear();
@@ -88,9 +88,10 @@ void rhs::performCalibration(float width, float height) {
         } else if (keyCode == 'r' || (keyCode & 0xff) == 'r') {
             if (img_quad.size() > 0)
                 img_quad.pop_back();
-        } else if ((keyCode == '\n' || (keyCode & 0xff) == '\n')) { // Enter key
+        } else if ((keyCode == '\n' || (keyCode & 0xff) == '\n') || (keyCode == '\r' || (keyCode & 0xff) == '\r')) { // Enter key
             break;
         }
+        
         imshow(windowName, image);
     }
 

@@ -40,8 +40,14 @@ void *Aggregator(void *arg) {
 		snap = snapshots.Pop();
 		float dt = snap.time() - prevSnapTime;
 
-		if (dt <= 0)
+		cout << "dt:" << dt << "(" <<snap.time() << ", " << prevSnapTime << ")" << endl;
+		if (dt <= 0) {
+			cout << "skipping ********" << dt << endl;
+			for (size_t i = 0; i < snap.size(); ++i) {
+				cout << snap[i] << " " << endl;
+			} cout << "*********\n";
 			continue;
+		}
 
 		vector<Point2f> predictions; // coupled with the objects array
 		for (size_t i = 0; i < objects.size(); ++i) {
@@ -77,6 +83,13 @@ void *Aggregator(void *arg) {
 			// set up new trackers for unmatched detections (if any)
 			for (size_t j = 0; j < snap.size(); ++j) {
 				if (used.find(j) == used.end()) {
+					Point2f match = snap[j];
+					Point2i intPt(match.x,match.y);
+					intPt.y = GROUND_HEIGHT - intPt.y;
+					if (intPt.x > 0 && intPt.x < GROUND_WIDTH && intPt.y > 0 && intPt.y < GROUND_HEIGHT) {
+						circle(image, intPt, 5, Scalar(255,255,255), 1, CV_AA);
+						//putText(image, tracker.tag(), (intPt + Point2i(5,-5)), font, font_scale, Scalar(0,255,0));
+					}
 					stringstream ss;
 					ss << "OBJ  " << (objectCount++);
 					objects.push_back(rhs::MovingObject(ss.str(), snap[j]));

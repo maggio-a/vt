@@ -29,10 +29,13 @@ void *Receiver(void *arg) {
 	// wait for STREAM_BEGIN msg, aggregate data until STREAM_END
 
 	while (true) {
+		int i = 0;
 		for (auto &channel : *connections) {
+			i++;
 			try {
 				Message m = channel->Receive(50);
 				if (m.type == rhs::OBJECT_DATA) {
+					cout << i << ": " << m.payload.substr(0, 10) << endl;
 					queue.Push(Snapshot(m.payload));
 				}
 			} catch (Socket::Timeout) {  }
