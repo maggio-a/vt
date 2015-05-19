@@ -2,7 +2,9 @@ project(VideoTracker)
 
 cmake_minimum_required(VERSION 2.8)
 
-set(RPI OFF)
+if (NOT DEFINED RPI)
+  set(RPI ON)
+endif()
 
 if(RPI)
   set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "/usr/local/lib/cmake")
