@@ -18,8 +18,7 @@ using std::vector;
 
 using namespace cv;
 
-static const int FRAME_WIDTH = 640;
-static const int FRAME_HEIGHT = 480;
+extern rhs::CameraParams params;
 
 static const string windowName = "Calibration";
 
@@ -39,15 +38,36 @@ static void onMouse(int event, int x, int y, int, void*) {
 
 void rhs::performCalibration(float width, float height) {
 #ifdef __arm__
+    
     raspicam::RaspiCam_Cv cam;
-    cam.set(CV_CAP_PROP_FRAME_WIDTH, FRAME_WIDTH);
-    cam.set(CV_CAP_PROP_FRAME_HEIGHT, FRAME_HEIGHT);
+    cam.set(CV_CAP_PROP_FRAME_WIDTH, params.resWidth);
+    cam.set(CV_CAP_PROP_FRAME_HEIGHT, params.resHeight);
+
+    if (params.shutterSpeed != -1) cam.set(CV_CAP_PROP_EXPOSURE, params.shutterSpeed);
+    if (params.brightness != -1) cam.set(CV_CAP_PROP_BRIGHTNESS, params.brightness);
+    if (params.saturation != -1) cam.set(CV_CAP_PROP_SATURATION, params.saturation);
+    if (params.contrast != -1) cam.set(CV_CAP_PROP_CONTRAST, params.contrast);
+    if (params.gain != -1) cam.set(CV_CAP_PROP_GAIN, params.gain);
+
+  #if CV_MINOR_VERSION == 4 && CV_SUBMINOR_VERSION == 11
+    if (params.wb_b != -1) cam.set(CV_CAP_PROP_WHITE_BALANCE_U, params.wb_b);
+    if (params.wb_r != -1) cam.set(CV_CAP_PROP_WHITE_BALANCE_V,  params.wb_r);
+  #else
+    if (params.wb_r != -1) cam.set(CV_CAP_PROP_WHITE_BALANCE_RED_V,  params.wb_r);
+    if (params.wb_b != -1) cam.set(CV_CAP_PROP_WHITE_BALANCE_BLUE_U, params.wb_b);
+  #endif
+
     cam.open();
+
 #else
+
     VideoCapture cam(0);
-    cam.set(CV_CAP_PROP_FRAME_WIDTH, FRAME_WIDTH);
-    cam.set(CV_CAP_PROP_FRAME_HEIGHT, FRAME_HEIGHT);
+    //cam.set(CV_CAP_PROP_FPS, 80.0);
+    cam.set(CV_CAP_PROP_FRAME_WIDTH, params.resWidth);
+    cam.set(CV_CAP_PROP_FRAME_HEIGHT, params.resHeight);
+
 #endif
+
     if (!cam.isOpened()) {
         cerr << "Failed to open the camera" << endl;
         exit(EXIT_FAILURE);
@@ -56,14 +76,21 @@ void rhs::performCalibration(float width, float height) {
     namedWindow(windowName);
     setMouseCallback(windowName, onMouse, 0);
 
-    Mat image;
+    Mat capture, image;
     int keyCode;
     int font = FONT_HERSHEY_PLAIN;
     double font_scale = 0.8;
-    int text_y = FRAME_HEIGHT - 10;
+    int text_y = params.frameHeight - 10;
+    bool resizeCapture = (params.resWidth != params.frameWidth) || (params.resHeight != params.frameHeight);
     while (true) {
         cam.grab();
-        cam.retrieve(image);
+        cam.retrieve(capture);
+
+        if (resizeCapture) {
+            resize(capture, image, Size(params.frameWidth, params.frameHeight));
+        } else {
+            capture.copyTo(image);
+        }
         
         circle(image, last, 5, Scalar(255,255,0), 1, CV_AA);
         if (img_quad.size() > 0) {
@@ -95,7 +122,7 @@ void rhs::performCalibration(float width, float height) {
         imshow(windowName, image);
     }
 
-    // Warning! insertion order determines the compuyted homography
+    // Warning! insertion order determines the computed homography
     vector<Point2f> world_quad; // ground rectangle in world coordinates
     world_quad.push_back(Point2f(0.0f,0.0f));
     world_quad.push_back(Point2f(width,0.0f));
@@ -115,6 +142,8 @@ void rhs::performCalibration(float width, float height) {
         FileStorage fs(rhs::PathToCalibrationData, FileStorage::WRITE);
         if (fs.isOpened()) {
             fs << rhs::PerspectiveTransformationName << img2world;
+            fs << rhs::GroundWidthParamName << width;
+            fs << rhs::GroundHeightParamName << height;
             fs.release();
             cout << "Calibration data written to " << rhs::PathToCalibrationData << endl;
         } else {

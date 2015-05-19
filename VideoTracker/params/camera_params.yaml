@@ -1,0 +1,18 @@
+%YAML:1.0
+rx: 640
+ry: 480
+fx: 640
+fy: 480
+ss: -1
+br: 50
+sa: 50
+co: 50
+gain: -1
+wb_r: -1
+wb_b: -1
+
+bgsHistory: 100
+bgsThreshold: 16.0
+bgsMorphX: 5
+bgsMorphY: 5
+bgsLearningRate: 0.01

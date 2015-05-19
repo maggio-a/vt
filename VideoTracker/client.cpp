@@ -71,8 +71,9 @@ int main(int argc, char *argv[]) {
 			}
 		} else if (cmd == "close") {
 			if (tracking) {
-				for (auto &channel : *connections)
+				for (auto &channel : *connections) {
 					channel->Send(rhs::Message(rhs::STOP_CAMERA));
+				}
 				tracking = false;
 			}
 			break;

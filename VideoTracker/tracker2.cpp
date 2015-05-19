@@ -1,5 +1,6 @@
 #include <iostream>
 #include <string>
+#include <sstream>
 #include <memory>
 #include <opencv2/opencv.hpp>
 #ifdef __arm__
@@ -20,28 +21,13 @@
 extern bool tracking;
 extern std::auto_ptr<Socket> channel;
 extern rhs::Timer live;
+extern rhs::CameraParams params;
 
 using namespace std;
 using namespace cv;
 
-
-static int H_MIN = 0;
-static int H_MAX = 200;
-static int S_MIN = 110;
-static int S_MAX = 256;
-static int V_MIN = 94;
-static int V_MAX = 256;
-
-static const int FRAME_WIDTH = 640;
-static const int FRAME_HEIGHT = 480;
-
 //const int MIN_OBJECT_AREA = 20*20;
 //const int MAX_OBJECT_AREA = FRAME_HEIGHT*FRAME_WIDTH/1.5;
-
-static const string windowName = "Original Image";
-static const string windowName1 = "HSV Image";
-static const string windowName2 = "Thresholded Image";
-static const string windowName3 = "After Morphological Operations";
 
 
 Point2f transformPoint(Point2f src, const Mat &transform) {
@@ -56,20 +42,35 @@ Point2f transformPoint(Point2f src, const Mat &transform) {
 }
 
 void *tracker2(void *arg) {
-
 #ifdef __arm__
+
 	raspicam::RaspiCam_Cv cam;
-	cam.set(CV_CAP_PROP_FRAME_WIDTH, FRAME_WIDTH);
-	cam.set(CV_CAP_PROP_FRAME_HEIGHT, FRAME_HEIGHT);
+	cam.set(CV_CAP_PROP_FRAME_WIDTH, params.resWidth);
+	cam.set(CV_CAP_PROP_FRAME_HEIGHT, params.resHeight);
+
+	if (params.shutterSpeed != -1) cam.set(CV_CAP_PROP_EXPOSURE, params.shutterSpeed);
+	if (params.brightness != -1) cam.set(CV_CAP_PROP_BRIGHTNESS, params.brightness);
+	if (params.saturation != -1) cam.set(CV_CAP_PROP_SATURATION, params.saturation);
+	if (params.contrast != -1) cam.set(CV_CAP_PROP_CONTRAST, params.contrast);
+	if (params.gain != -1) cam.set(CV_CAP_PROP_GAIN, params.gain);
+
+  #if CV_MINOR_VERSION == 4 && CV_SUBMINOR_VERSION == 11
+	if (params.wb_b != -1) cam.set(CV_CAP_PROP_WHITE_BALANCE_U, params.wb_b);
+	if (params.wb_r != -1) cam.set(CV_CAP_PROP_WHITE_BALANCE_V,  params.wb_r);
+  #else
+	if (params.wb_r != -1) cam.set(CV_CAP_PROP_WHITE_BALANCE_RED_V,  params.wb_r);
+	if (params.wb_b != -1) cam.set(CV_CAP_PROP_WHITE_BALANCE_BLUE_U, params.wb_b);
+  #endif
+	
 	cam.open();
+
 #else
+
 	VideoCapture cam(0);
 	//cam.set(CV_CAP_PROP_FPS, 80.0);
-	cam.set(CV_CAP_PROP_FRAME_WIDTH, FRAME_WIDTH);
-	cam.set(CV_CAP_PROP_FRAME_HEIGHT, FRAME_HEIGHT);
-	//cam.set(CV_CAP_PROP_AUTO_EXPOSURE, 0.0);
-	//cam.set(CV_CAP_PROP_EXPOSURE, 157.0);
-	//cout << cam.get(CV_CAP_PROP_AUTO_EXPOSURE) << " " << cam.get(CV_CAP_PROP_EXPOSURE) << " **\n";
+	cam.set(CV_CAP_PROP_FRAME_WIDTH, params.resWidth);
+	cam.set(CV_CAP_PROP_FRAME_HEIGHT, params.resHeight);
+
 #endif
 
 	if (!cam.isOpened()) {
@@ -78,6 +79,7 @@ void *tracker2(void *arg) {
 	}
 
 	Mat img2world;
+	float groundWidth, groundHeight;
 	FileStorage fs(rhs::PathToCalibrationData, FileStorage::READ);
 	if (!fs.isOpened() || fs[rhs::PerspectiveTransformationName].type() == FileNode::NONE) {
 		//disaster
@@ -85,21 +87,32 @@ void *tracker2(void *arg) {
 				  << ", using plain image coordinates" << endl;
 		img2world = Mat(3, 3, CV_64F);
 		setIdentity(img2world);
+		groundWidth = params.frameWidth;
+		groundHeight = params.frameHeight;
 	} else {
 		fs[rhs::PerspectiveTransformationName] >> img2world;
+		fs[rhs::GroundWidthParamName] >> groundWidth;
+		fs[rhs::GroundHeightParamName] >> groundHeight;
 	}
 	fs.release();
 
-	Mat image;
-	// warm up camera (2 seconds)
+	stringstream ss;
+	ss << groundWidth << " " << groundHeight;
+	channel->Send(rhs::Message(rhs::STREAM_START, ss.str()));
+
+	// warm up camera (3 seconds)
 	rhs::Timer tlocal;
-	while(tlocal.timeElapsed() < 2.0f) {
+	while(tlocal.timeElapsed() < 3.0f) {
 		cam.grab();
 	}
+
+
+	Mat capture;
+	Mat rsz;
+	bool resizeCapture = (params.resWidth != params.frameWidth) || (params.resHeight != params.frameHeight);
 	vector< vector<Point2i> > contours;
 
-	rhs::ColorBasedDetector detector(Scalar(H_MIN,S_MIN,V_MIN), Scalar(H_MAX,S_MAX,V_MAX));
-	//rhs::BackgroundSubtractionBasedDetector detector;
+	rhs::BackgroundSubtractionBasedDetector detector(params.bgsHistory, params.bgsThreshold, params.bgsMorphX, params.bgsMorphY, params.bgsLearningRate);
 
 	float timestamp;
 	int c=1;
@@ -107,9 +120,14 @@ void *tracker2(void *arg) {
 	while (tracking) {
 		cam.grab();
 		timestamp = live.timeElapsed();
-		cam.retrieve(image);
+		cam.retrieve(capture);
 
-		detector.DetectObjects(image, contours);
+		if (resizeCapture) {
+			resize(capture, rsz, Size(params.frameWidth, params.frameHeight));
+			detector.DetectObjects(rsz, contours);
+		} else {
+			detector.DetectObjects(capture, contours);
+		}
 
 		rhs::Snapshot snap(timestamp);
 		for (size_t j = 0; j < contours.size(); ++j) {
@@ -132,6 +150,8 @@ void *tracker2(void *arg) {
 			imwrite(ss.str(), image);
 		}*/
 	}
+
+	channel->Send(rhs::Message(rhs::STREAM_STOP));
 
 	cout << "Retrieved " << c << " frames in " << tlocal.timeElapsed() << " seconds.\n";
 

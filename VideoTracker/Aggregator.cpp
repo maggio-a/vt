@@ -19,7 +19,7 @@ using namespace rhs;
 
 void *Aggregator(void *arg) {
 	SynchronizedPriorityQueue<Snapshot> &snapshots = *((SynchronizedPriorityQueue<Snapshot>*)arg);
-	sleep(2); //wait for some data to be available
+	sleep(3); //wait for some data to be available
 	vector<rhs::MovingObject> objects;
 	int objectCount = 0;
 

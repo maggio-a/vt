@@ -25,21 +25,42 @@ void *Receiver(void *arg) {
 
 	thread agg(Aggregator, &queue);
 
-	// we should have a more robust protocol
-	// wait for STREAM_BEGIN msg, aggregate data until STREAM_END
+	//if streaming[i] == true then connections[i] is receiving data
+	vector<bool> streaming(connections->size(), false);
 
 	while (true) {
-		int i = 0;
-		for (auto &channel : *connections) {
-			i++;
-			try {
-				Message m = channel->Receive(50);
-				if (m.type == rhs::OBJECT_DATA) {
-					cout << i << ": " << m.payload.substr(0, 10) << endl;
-					queue.Push(Snapshot(m.payload));
-				}
-			} catch (Socket::Timeout) {  }
+		bool allready = true;
+		for (size_t i = 0; i < streaming.size(); i++) {
+			unique_ptr<Socket> &channel = (*connections)[i];
+			if (!streaming[i]) {
+				Message hdr = channel->Receive();
+				if (hdr.type == rhs::STREAM_START)
+					streaming[i] = true;
+				else //received wrong message
+					allready = false;
+			}
 		}
+		if (allready) break;
+	}
+
+	while (true) {
+		bool alldone = true;
+		for (size_t i = 0; i < streaming.size(); i++) {
+			if (streaming[i]) {
+				alldone = false;
+				unique_ptr<Socket> &channel = (*connections)[i];
+				try {
+					Message m = channel->Receive(50);
+					if (m.type == rhs::OBJECT_DATA) {
+						cout << i << ": " << m.payload.substr(0, 10) << endl;
+						queue.Push(Snapshot(m.payload));
+					} else if (m.type == rhs::STREAM_STOP) { // this channel has stopped streaming
+						streaming[i] = false; 
+					}
+				} catch (Socket::Timeout) {  }
+			}
+		}
+		if (alldone) break;
 	}
 
 	agg.join();

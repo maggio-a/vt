@@ -21,6 +21,7 @@ extern void *tracker2(void *arg);
 bool tracking = false;
 std::auto_ptr<Socket> channel(0);
 rhs::Timer live;
+rhs::CameraParams params(rhs::CameraParamsPath);
 
 void help(char *program) {
 	std::cout << "Usage: " << program << " [-c width height]" << std::endl
@@ -58,63 +59,66 @@ int main(int argc, char *argv[]) {
 
 	// need to try-catch
 	std::auto_ptr<ServerSocket> server(new ServerSocket(12345, 5));
-	channel.reset(server->accept());
-
-	bool done = false;
-
-	thread *cam_service;
 
 	cout << "Camera server running" << endl;
 
-	while (!done) {
-		//msg_code cmd;
-		rhs::Message msg(0); cout << "FIXME :(" << endl;
-
-		try {
-			cout << "receiving ";
-			//channel->recv(&cmd, sizeof(cmd));
-			msg = channel->Receive();
-			cout << "cmd " << msg.type << endl;
-		}
-		catch (int status) {
-			//cmd = QUIT; // forces quit
-			msg.type = rhs::QUIT; // forces quit
-			if (status < 0) {
-				errno = status;
-				perror("recv");
-			} 
-		}
-
-		switch (msg.type) {
-		case rhs::START_CAMERA:
-			cout << msg.payload << endl;
-			live.restart();
-			if (!tracking) {
-				tracking = true;
-				try {
-					cam_service = new thread(tracker2, 0);
-				}
-				catch (int error) {
-					cerr << "disaster" << endl;
-					errno = error;
-					perror("thread");
+	while (true) { // handles 1 connection at a time
+		bool done = false;
+		channel.reset(server->accept());
+	
+		thread *cam_service;
+	
+		while (!done) {
+			try {
+				cout << "receiving ";
+				rhs::Message msg = channel->Receive();
+				cout << "cmd " << msg.type << endl;
+	
+				switch (msg.type) {
+				case rhs::START_CAMERA:
+					cout << msg.payload << endl;
+					live.restart();
+					if (!tracking) {
+						tracking = true;
+						try {
+							cam_service = new thread(tracker2, 0);
+						}
+						catch (int error) {
+							cerr << "disaster" << endl;
+							errno = error;
+							perror("thread");
+						}
+					}
+					break;
+				case rhs::QUIT:
+					done = true;
+				case rhs::STOP_CAMERA:
+					if (tracking) {
+						tracking = false;
+						cam_service->join();
+						delete cam_service;
+					}
+					break;
+				default:
+					std::cerr << "Warning: message code unknown" << std::endl;
 				}
 			}
-			break;
-		case rhs::QUIT:
-			done = true;
-		case rhs::STOP_CAMERA:
-			if (tracking) {
-				tracking = false;
-				cam_service->join();
-				delete cam_service;
+			catch (int status) {
+				if (tracking) {
+					tracking = false;
+					cam_service->join();
+					delete cam_service;
+				}
+				if (status < 0) {
+					errno = status;
+					perror("recv");
+				}
+				break;
 			}
-			break;
-		default:
-			std::cerr << "Warning: message code unknown" << std::endl;
-		}
+		} //while
+	
+		channel->close();
 	}
 
-	channel->close();
 	server->close();
 }

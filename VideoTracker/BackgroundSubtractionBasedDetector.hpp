@@ -10,38 +10,30 @@ namespace rhs {
 
 class BackgroundSubtractionBasedDetector : public IDetector {
 public:
-	BackgroundSubtractionBasedDetector();
-	~BackgroundSubtractionBasedDetector();
-
-	void DetectObjects(const cv::Mat &image, std::vector< std::vector<cv::Point2i> > &contours_out);
-
 	cv::Mat maskout;
+
+	BackgroundSubtractionBasedDetector(int history, double threshold, int morph_x, int morph_y, float learn=0.02, bool shadows = false)
+			: maskout(), bgs(history, threshold, shadows), mx(morph_x), my(morph_y), lr(learn), mask() {
+	}
+	
+	~BackgroundSubtractionBasedDetector() { }
+
+	void DetectObjects(const cv::Mat &image, std::vector< std::vector<cv::Point2i> > &contours_out) {
+		cv::Mat still;
+		image.copyTo(still);
+		bgs(still, mask, lr);
+		cv::morphologyEx(mask, mask, cv::MORPH_OPEN, cv::getStructuringElement(cv::MORPH_RECT,cv::Size(mx,my)));
+		mask.copyTo(maskout);
+		cv::findContours(mask, contours_out, CV_RETR_EXTERNAL, CV_CHAIN_APPROX_NONE);
+	}
 
 private:
 	cv::BackgroundSubtractorMOG2 bgs;
+	int mx;
+	int my;
+	float lr;
 	cv::Mat mask;
 };
-
-// FIXME parameters
-BackgroundSubtractionBasedDetector::BackgroundSubtractionBasedDetector()
-		: bgs(100, 16.0f, false), mask() {
-	//bgs.set("nShadowDetection", 0);
-}
-
-BackgroundSubtractionBasedDetector::~BackgroundSubtractionBasedDetector() {
-
-}
-
-void BackgroundSubtractionBasedDetector::DetectObjects(
-		const cv::Mat &image, std::vector< std::vector<cv::Point2i> > &contours_out) {
-	cv::Mat snapshot;
-	image.copyTo(snapshot);
-	bgs(snapshot, mask);
-	if (image.size().width >= 640 && image.size().height>= 480)
-		cv::morphologyEx(mask, mask, cv::MORPH_OPEN, cv::getStructuringElement(cv::MORPH_RECT,cv::Size(5,5)));
-	mask.copyTo(maskout);
-	cv::findContours(mask, contours_out, CV_RETR_EXTERNAL, CV_CHAIN_APPROX_NONE);
-}
 
 } // rhs namespace
 
