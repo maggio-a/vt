@@ -67,6 +67,8 @@ struct TrackingData {
 	};
 };
 
+static const string windowName = "Plane view";
+
 void *Aggregator(void *arg) {
 	SynchronizedPriorityQueue<Snapshot> &snapshots = *((SynchronizedPriorityQueue<Snapshot>*)arg);
 	sleep(3); //wait for some data to be available
@@ -84,10 +86,17 @@ void *Aggregator(void *arg) {
 
 	Mat measurement(2, 1, CV_32F);
 	int c = 0;
+	namedWindow(windowName);
 	while (true) {
 		Mat image = Mat::zeros(650, 650, CV_8UC3);
 
-		snap = snapshots.Pop();
+		try {
+			snap = snapshots.Pop();
+		} catch (SynchronizedPriorityQueue<Snapshot>::QueueClosed) {
+			destroyWindow(windowName);
+			waitKey(1000);
+			return 0;
+		}
 		float dt = snap.time() - prevSnapTime;
 
 		//cout << "dt:" << dt << "(" <<snap.time() << ", " << prevSnapTime << ")" << endl;
@@ -158,7 +167,7 @@ void *Aggregator(void *arg) {
 		// if trackers lost their object for more than a given threshold, remove them
 		data.erase(remove_if(data.begin(), data.end(), TrackingData::Outdated(3.0f)), data.end());
 
-		imshow("Plane view", image);
+		imshow(windowName, image);
 		
 		int keyCode = waitKey(10);
 		if ((keyCode == '\n' || (keyCode & 0xff) == '\n') || (keyCode == '\r' || (keyCode & 0xff) == '\r')) { // Enter key
@@ -169,4 +178,6 @@ void *Aggregator(void *arg) {
 
 		prevSnapTime = snap.time();
 	}
+
+	return 0;
 }

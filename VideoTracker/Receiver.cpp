@@ -63,6 +63,8 @@ void *Receiver(void *arg) {
 		if (alldone) break;
 	}
 
+	queue.Close();
 	agg.join();
+
 	return 0;
 }

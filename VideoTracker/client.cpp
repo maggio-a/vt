@@ -10,11 +10,9 @@
 
 using namespace std;
 
-std::auto_ptr<thread> receiver(0);
+extern void *Receiver(void *arg);
 
 shared_ptr< vector< unique_ptr<Socket> > > connections;
-
-extern void *Receiver(void *arg);
 
 static void split(const string &s, char delimiter, vector<string> &tokens_out) {
 	tokens_out.clear();
@@ -36,6 +34,7 @@ int main(int argc, char *argv[]) {
 	//msg_code cmd = STOP_CAMERA;
 
 	bool tracking = false;
+	std::unique_ptr<thread> receiver(nullptr);
 
 	for (;;) {
 		string cmd, s;
@@ -73,6 +72,7 @@ int main(int argc, char *argv[]) {
 				for (auto &channel : *connections)
 					channel->Send(rhs::Message(rhs::STOP_CAMERA));
 				tracking = false;
+				receiver->join();
 			} else {
 				cout << "Tracking not started yet!\n";
 			}
@@ -82,6 +82,7 @@ int main(int argc, char *argv[]) {
 					channel->Send(rhs::Message(rhs::STOP_CAMERA));
 				}
 				tracking = false;
+				receiver->join();
 			}
 			break;
 		} else {
