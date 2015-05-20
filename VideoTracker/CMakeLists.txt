@@ -19,7 +19,7 @@ endif()
 
 # aux_source_directory(. SRC_LIST)
 # add_executable(${PROJECT_NAME} ${SRC_LIST})
-add_executable(CameraServer server.cpp tracker.cpp tracker2.cpp calibration.cpp Socket.cpp ServerSocket.cpp Snapshot.cpp)
+add_executable(CameraServer server.cpp tracker2.cpp calibration.cpp Socket.cpp ServerSocket.cpp Snapshot.cpp)
 if (RPI)
   target_link_libraries(CameraServer ${raspicam_CV_LIBS} pthread rt)
 else()

@@ -24,12 +24,12 @@ rhs::Timer live;
 rhs::CameraParams params(rhs::CameraParamsPath);
 
 void help(char *program) {
-	std::cout << "Usage: " << program << " [-c width height]" << std::endl
-	          << " -c option to configure the coordinate transformation" << std::endl
-	          << "   width: width of the ground rectangle" << std::endl
-	          << "   height: height of the ground rectangle" << std::endl
-	          << "   the ground rectangle on the image plane must" << std::endl
-	          << "   be drawn according to the ground coordinates (0,0)->(width,0)->(width,height)->(0,height)" << std::endl;
+	std::cout << "Usage: " << program << " [-c width height]\n"
+	          << " -c option to configure the coordinate transformation\n"
+	          << "   width: width of the ground rectangle\n"
+	          << "   height: height of the ground rectangle\n"
+	          << "   the ground rectangle on the image plane must\n"
+	          << "   be drawn according to the ground coordinates (0,0)->(width,0)->(width,height)->(0,height)\n";
 }
 
 int main(int argc, char *argv[]) {
@@ -65,20 +65,19 @@ int main(int argc, char *argv[]) {
 	while (true) { // handles 1 connection at a time
 		bool done = false;
 		channel.reset(server->accept());
+		cout << "Connection accepted...\n";
 	
 		thread *cam_service;
 	
 		while (!done) {
 			try {
-				cout << "receiving ";
 				rhs::Message msg = channel->Receive();
-				cout << "cmd " << msg.type << endl;
 	
 				switch (msg.type) {
 				case rhs::START_CAMERA:
-					cout << msg.payload << endl;
-					live.restart();
 					if (!tracking) {
+						cout << "Starting capture\n";
+						live.restart();
 						tracking = true;
 						try {
 							cam_service = new thread(tracker2, 0);
@@ -100,7 +99,7 @@ int main(int argc, char *argv[]) {
 					}
 					break;
 				default:
-					std::cerr << "Warning: message code unknown" << std::endl;
+					std::cerr << "Warning: message code unknown\n";
 				}
 			}
 			catch (int status) {
@@ -111,13 +110,14 @@ int main(int argc, char *argv[]) {
 				}
 				if (status < 0) {
 					errno = status;
-					perror("recv");
+					perror("Receive");
 				}
 				break;
 			}
-		} //while
+		} //while handling connection
 	
 		channel->close();
+		cout << "Disconnected\n";
 	}
 
 	server->close();

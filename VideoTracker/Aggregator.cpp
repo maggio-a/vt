@@ -2,6 +2,8 @@
 #include <vector>
 #include <sstream>
 #include <set>
+#include <deque>
+#include <cstdlib>
 #include <unistd.h>
 #include <opencv2/opencv.hpp>
 
@@ -17,10 +19,58 @@ using namespace rhs;
 #define GROUND_WIDTH 650
 #define GROUND_HEIGHT 650
 
+static Scalar colors[] = {
+	Scalar(50 , 180,  96),
+	Scalar(120,  48, 250),
+	Scalar(150,  25,  60),
+	Scalar( 75, 220, 200),
+	Scalar(250,  50,  50),
+	Scalar(190,  75, 130),
+};
+
+struct TrackingData {
+	MovingObject object;
+	Scalar color;
+	deque<Point2i> track;
+
+	TrackingData(MovingObject o, Scalar c) : object(o), color(c), track() {  }
+
+	void AddMarker(Point2i pt) {
+		track.push_front(pt);
+		if (track.size() > 200) {
+			track.pop_back();
+		}
+	}
+
+	void Draw(Mat &image, int roi_xmin, int roi_xmax, int roi_ymin, int roi_ymax) {
+		int font = FONT_HERSHEY_PLAIN;
+		double font_scale = 1.0;
+		vector<Point2i> trace;
+		for (auto &ipt : track) {
+			if (ipt.x > roi_xmin && ipt.x < roi_xmax && ipt.y > 0 && ipt.y < roi_ymax) {
+				Point2i target = Point2i(ipt.x,roi_ymax-ipt.y);
+				circle(image, target, 5, color, 1, CV_AA);
+				//putText(image, object.tag(), (target + Point2i(5,-5)), font, font_scale, Scalar(0,255,0));
+				trace.push_back(target);
+			}
+		}
+		Mat contour(trace);
+		int npts = contour.rows;
+		polylines(image, (const Point2i **)&contour.data, &npts, 1, false, Scalar(200,200,200), 1);//, CV_AA);
+	} 
+
+	// predicate for purging obsolete data
+	struct Outdated {
+		float threshold;
+		Outdated(float th) : threshold(th) {  }
+		bool operator()(const struct TrackingData &data) const { return (data.object.timeFromLastMeasurement() > threshold); }
+	};
+};
+
 void *Aggregator(void *arg) {
 	SynchronizedPriorityQueue<Snapshot> &snapshots = *((SynchronizedPriorityQueue<Snapshot>*)arg);
 	sleep(3); //wait for some data to be available
-	vector<rhs::MovingObject> objects;
+	vector<TrackingData> data;
 	int objectCount = 0;
 
 	float prevSnapTime = 0.0f;
@@ -29,78 +79,93 @@ void *Aggregator(void *arg) {
 	for (size_t i = 0; i < snap.size(); ++i) {
 		stringstream ss;
 		ss << "OBJ  " << (objectCount++);
-		objects.push_back(MovingObject(ss.str(),snap[i]));
+		data.push_back( TrackingData(MovingObject(ss.str(),snap[i]), colors[rand()%6]) );
 	}
 
-	int font = FONT_HERSHEY_PLAIN;
-    double font_scale = 1.0;
 	Mat measurement(2, 1, CV_32F);
-	Mat image = Mat::zeros(650, 650, CV_8UC3);
+	int c = 0;
 	while (true) {
+		Mat image = Mat::zeros(650, 650, CV_8UC3);
+
 		snap = snapshots.Pop();
 		float dt = snap.time() - prevSnapTime;
 
-		cout << "dt:" << dt << "(" <<snap.time() << ", " << prevSnapTime << ")" << endl;
+		//cout << "dt:" << dt << "(" <<snap.time() << ", " << prevSnapTime << ")" << endl;
 		if (dt <= 0) {
 			cout << "skipping ********" << dt << endl;
-			for (size_t i = 0; i < snap.size(); ++i) {
-				cout << snap[i] << " " << endl;
-			} cout << "*********\n";
-			continue;
+		//	for (size_t i = 0; i < snap.size(); ++i) {
+		//		cout << snap[i] << " " << endl;
+		//	} cout << "*********\n";
+		//	continue;
 		}
 
+		// Predict step
 		vector<Point2f> predictions; // coupled with the objects array
-		for (size_t i = 0; i < objects.size(); ++i) {
-			predictions.push_back(objects[i].predictPosition(dt));
+		for (auto &td : data) {
+			predictions.push_back(td.object.predictPosition(dt));
 		}
 
-		// FIXME fix this, now only prints predictions if we have any detection i should probably print the statePost of the filters	
+		// Compute matchings
 		if (snap.size() > 0) { // if we detected objects
 			set<size_t> used;
 			if (predictions.size() > 0) { // if already tracking objects, compute the matching 
 				vector<size_t> matching = ComputeMatching(predictions, snap.data());
 				for (size_t i = 0; i < matching.size(); ++i) {
-					rhs::MovingObject &tracker = objects[i];
+					MovingObject &tracker = data[i].object;
 					size_t j = matching[i];
-					if (j < snap.size()) {
+					if (j < snap.size()) { // snap[j] matches the prediction of data[i]
+						// Update step
 						Point2f match = snap[j];
-						Point2i intPt(match.x,match.y);
-						intPt.y = GROUND_HEIGHT - intPt.y;
-						if (intPt.x > 0 && intPt.x < GROUND_WIDTH && intPt.y > 0 && intPt.y < GROUND_HEIGHT) {
-							circle(image, intPt, 5, Scalar(255,255,0), 1, CV_AA);
-							putText(image, tracker.tag(), (intPt + Point2i(5,-5)), font, font_scale, Scalar(0,255,0));
-						}
-
 						measurement.at<float>(0) = match.x;
 						measurement.at<float>(1) = match.y;
 						assert(used.insert(j).second == true);
 						tracker.feedback(measurement);
 					} else {
-						//cout << "FIXME object without detection" << endl;
+						// The predicted position of data[i] did not match any detection
 					}
 				}
 			}
+
 			// set up new trackers for unmatched detections (if any)
 			for (size_t j = 0; j < snap.size(); ++j) {
 				if (used.find(j) == used.end()) {
-					Point2f match = snap[j];
-					Point2i intPt(match.x,match.y);
-					intPt.y = GROUND_HEIGHT - intPt.y;
-					if (intPt.x > 0 && intPt.x < GROUND_WIDTH && intPt.y > 0 && intPt.y < GROUND_HEIGHT) {
-						circle(image, intPt, 5, Scalar(255,255,255), 1, CV_AA);
-						//putText(image, tracker.tag(), (intPt + Point2i(5,-5)), font, font_scale, Scalar(0,255,0));
-					}
 					stringstream ss;
 					ss << "OBJ  " << (objectCount++);
-					objects.push_back(rhs::MovingObject(ss.str(), snap[j]));
+					data.push_back( TrackingData(MovingObject(ss.str(),snap[j]), colors[rand()%6]) );
 				}
 			}
 		}
 
-		//cout << "NEED TO SHOW SOMETHING HERE" << endl;
+		for (auto &td : data) {
+			Point2f pt;
+			Point2i intPt;
+			switch (td.object.getObjectState()) {
+
+			case MovingObject::INITIALIZED:
+			case MovingObject::AFTER_UPDATE:
+				pt = td.object.getEstimatePost();
+				intPt = Point2i(pt.x, pt.y);
+				break;
+			case MovingObject::AFTER_PREDICT: // kalman filter was not updated
+				pt = td.object.getEstimatePre();
+				intPt = Point2i(pt.x, pt.y);
+				break;
+			}
+			td.AddMarker(intPt);
+			td.Draw(image, 0, GROUND_WIDTH, 0, GROUND_HEIGHT);
+		}
+
+		// if trackers lost their object for more than a given threshold, remove them
+		data.erase(remove_if(data.begin(), data.end(), TrackingData::Outdated(3.0f)), data.end());
 
 		imshow("Plane view", image);
-		waitKey(1);
+		
+		int keyCode = waitKey(10);
+		if ((keyCode == '\n' || (keyCode & 0xff) == '\n') || (keyCode == '\r' || (keyCode & 0xff) == '\r')) { // Enter key
+			stringstream ss;
+			ss << "Capture" << (c++) << ".png";
+			imwrite(ss.str(), image);
+		}
 
 		prevSnapTime = snap.time();
 	}

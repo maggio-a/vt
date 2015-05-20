@@ -39,8 +39,13 @@ int main(int argc, char *argv[]) {
 
 	for (;;) {
 		string cmd, s;
-		getline(cin, s);
-		split(s, ' ', tokens);
+
+		tokens.clear();
+		do {
+			getline(cin, s);
+			split(s, ' ', tokens);
+		} while (tokens.size() == 0);
+
 		cmd = tokens[0];
 		if (cmd == "connect") {
 			if (tracking) {
@@ -50,7 +55,9 @@ int main(int argc, char *argv[]) {
 			} else {
 				string address = tokens[1];
 				int port = tokens.size() > 2 ? stoi(tokens[2]) : rhs::SERVER_PORT_DEFAULT;
+				cout << "Connecting to " << tokens[1] << ":" << (tokens.size() > 2 ? stoi(tokens[2]) : rhs::SERVER_PORT_DEFAULT) << "...\n";
 				connections->push_back(unique_ptr<Socket>(new Socket(address, port)));
+				cout << "Connected\n";
 			}
 		} else if (cmd == "start") {
 			if (connections->size() == 0) {
