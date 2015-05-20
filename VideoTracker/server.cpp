@@ -15,11 +15,10 @@ using std::cout;
 using std::cerr;
 using std::endl;
 
-extern void *tracker(void *arg);
 extern void *tracker2(void *arg);
 
 bool tracking = false;
-std::auto_ptr<Socket> channel(0);
+std::unique_ptr<Socket> channel(nullptr);
 rhs::Timer live;
 rhs::CameraParams params(rhs::CameraParamsPath);
 
@@ -121,4 +120,6 @@ int main(int argc, char *argv[]) {
 	}
 
 	server->close();
+	cout << "here\n";
+	return 0;
 }

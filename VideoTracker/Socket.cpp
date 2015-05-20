@@ -107,7 +107,7 @@ void Socket::Send(const Message &m) {
 
 // FIXME needs integrity checks
 void Socket::send(const void *base, size_t n) {
-	if (::send(_fd, base, n, 0) < 0) {
+	if (::send(_fd, base, n, MSG_NOSIGNAL) < 0) {
 		perror("send");
 		throw _err = errno;
 	}

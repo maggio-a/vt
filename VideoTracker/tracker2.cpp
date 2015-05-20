@@ -19,7 +19,7 @@
 #include <sstream>
 
 extern bool tracking;
-extern std::auto_ptr<Socket> channel;
+extern std::unique_ptr<Socket> channel;
 extern rhs::Timer live;
 extern rhs::CameraParams params;
 
@@ -98,7 +98,11 @@ void *tracker2(void *arg) {
 
 	stringstream ss;
 	ss << groundWidth << " " << groundHeight;
-	channel->Send(rhs::Message(rhs::STREAM_START, ss.str()));
+	try {
+		channel->Send(rhs::Message(rhs::STREAM_START, ss.str()));
+	} catch(...) {
+		return 0;
+	}
 
 	// warm up camera (3 seconds)
 	rhs::Timer tlocal;
@@ -138,7 +142,11 @@ void *tracker2(void *arg) {
 		}
 
 		rhs::Message msg(rhs::OBJECT_DATA, snap.str());
-		channel->Send(msg);
+		try {
+			channel->Send(msg);
+		} catch (...) {
+			return 0;
+		}
 
 		c++;
 
@@ -151,7 +159,11 @@ void *tracker2(void *arg) {
 		}*/
 	}
 
-	channel->Send(rhs::Message(rhs::STREAM_STOP));
+	try {
+		channel->Send(rhs::Message(rhs::STREAM_STOP));
+	} catch (...) {
+		return 0;
+	}
 
 	cout << "Retrieved " << c << " frames in " << tlocal.timeElapsed() << " seconds.\n";
 
