@@ -50,7 +50,23 @@ struct TrackingData {
 			if (ipt.x > roi_xmin && ipt.x < roi_xmax && ipt.y > 0 && ipt.y < roi_ymax) {
 				Point2i target = Point2i(ipt.x,roi_ymax-ipt.y);
 				circle(image, target, 5, color, 1, CV_AA);
-				//putText(image, object.tag(), (target + Point2i(5,-5)), font, font_scale, Scalar(0,255,0));
+
+				if (ipt == track.front()) {
+					Point2f pt;
+					switch (object.getObjectState()) {
+					case MovingObject::INITIALIZED:
+					case MovingObject::AFTER_UPDATE:
+						pt = object.getEstimatePost();
+						break;
+					case MovingObject::AFTER_PREDICT:
+						pt = object.getEstimatePre();
+						break;
+					}
+					stringstream ss;
+					ss << pt.x << ", " << pt.y;
+					putText(image, ss.str(), (target + Point2i(5,-5)), font, font_scale, Scalar(0,255,0));
+				}
+
 				trace.push_back(target);
 			}
 		}
@@ -147,20 +163,16 @@ void *Aggregator(void *arg) {
 
 		for (auto &td : data) {
 			Point2f pt;
-			Point2i intPt;
 			switch (td.object.getObjectState()) {
-
 			case MovingObject::INITIALIZED:
 			case MovingObject::AFTER_UPDATE:
 				pt = td.object.getEstimatePost();
-				intPt = Point2i(pt.x, pt.y);
 				break;
 			case MovingObject::AFTER_PREDICT: // kalman filter was not updated
 				pt = td.object.getEstimatePre();
-				intPt = Point2i(pt.x, pt.y);
 				break;
 			}
-			td.AddMarker(intPt);
+			td.AddMarker(Point2i(pt.x, pt.y));
 			td.Draw(image, 0, GROUND_WIDTH, 0, GROUND_HEIGHT);
 		}
 
