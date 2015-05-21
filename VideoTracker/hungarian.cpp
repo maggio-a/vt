@@ -105,8 +105,8 @@ long dist(cv::Point2f p1, cv::Point2f p2) {
 	return std::sqrt(diff.x*diff.x + diff.y*diff.y);
 }
 
-//FIXME 1000
-vector<size_t> ComputeMatching(vector<cv::Point2f> predictions, vector<cv::Point2f> detections) {
+
+vector<size_t> ComputeMatching(vector<cv::Point2f> predictions, vector<cv::Point2f> detections, long distMax) {
 	assert(predictions.size() > 0 && detections.size() > 0);
 	size_t n = predictions.size();
 	size_t m = std::max(predictions.size(), detections.size());
@@ -117,7 +117,7 @@ vector<size_t> ComputeMatching(vector<cv::Point2f> predictions, vector<cv::Point
 			if (j < detections.size())
 				*(*(table + i) + j) = cell(dist(predictions[i], detections[j]));
 			else
-				*(*(table + i) + j) = 1000;
+				*(*(table + i) + j) = distMax;
 		}
 	}
 	//cout << "\nMatching table:\n";

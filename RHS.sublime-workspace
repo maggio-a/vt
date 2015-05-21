@@ -4,6 +4,14 @@
 		"selected_items":
 		[
 			[
+				"GR",
+				"GROUND_HEIGHT"
+			],
+			[
+				"GROUND",
+				"GROUND_WIDTH"
+			],
+			[
 				"ground",
 				"groundHeight"
 			],
@@ -66,10 +74,6 @@
 			[
 				"sat",
 				"saturation"
-			],
-			[
-				"GROUND",
-				"GROUND_HEIGHT"
 			],
 			[
 				"token",
@@ -160,18 +164,18 @@
 	"buffers":
 	[
 		{
-			"file": "VideoTracker/client.cpp",
+			"file": "VideoTracker/SynchronizedPriorityQueue.hpp",
 			"settings":
 			{
-				"buffer_size": 2142,
+				"buffer_size": 1120,
 				"line_ending": "Unix"
 			}
 		},
 		{
-			"file": "VideoTracker/CMakeLists.txt",
+			"file": "VideoTracker/client.cpp",
 			"settings":
 			{
-				"buffer_size": 821,
+				"buffer_size": 2886,
 				"line_ending": "Unix"
 			}
 		},
@@ -179,15 +183,7 @@
 			"file": "VideoTracker/Aggregator.cpp",
 			"settings":
 			{
-				"buffer_size": 3403,
-				"line_ending": "Unix"
-			}
-		},
-		{
-			"file": "VideoTracker/Receiver.cpp",
-			"settings":
-			{
-				"buffer_size": 1620,
+				"buffer_size": 5859,
 				"line_ending": "Unix"
 			}
 		},
@@ -196,54 +192,6 @@
 			"settings":
 			{
 				"buffer_size": 180,
-				"line_ending": "Unix"
-			}
-		},
-		{
-			"file": "VideoTracker/msg.hpp",
-			"settings":
-			{
-				"buffer_size": 569,
-				"line_ending": "Unix"
-			}
-		},
-		{
-			"file": "VideoTracker/Snapshot.cpp",
-			"settings":
-			{
-				"buffer_size": 1391,
-				"line_ending": "Unix"
-			}
-		},
-		{
-			"file": "VideoTracker/calibration.hpp",
-			"settings":
-			{
-				"buffer_size": 3472,
-				"line_ending": "Unix"
-			}
-		},
-		{
-			"file": "VideoTracker/calibration.cpp",
-			"settings":
-			{
-				"buffer_size": 5404,
-				"line_ending": "Unix"
-			}
-		},
-		{
-			"file": "VideoTracker/tracker2.cpp",
-			"settings":
-			{
-				"buffer_size": 4476,
-				"line_ending": "Unix"
-			}
-		},
-		{
-			"file": "VideoTracker/server.cpp",
-			"settings":
-			{
-				"buffer_size": 2794,
 				"line_ending": "Unix"
 			}
 		}
@@ -317,40 +265,44 @@
 	},
 	"expanded_folders":
 	[
-		"/home/andrea/Documents/rhs1415"
+		"/home/andrea/Documents/rhs1415",
+		"/home/andrea/Documents/rhs1415/VideoTracker",
+		"/home/andrea/Documents/rhs1415/VideoTracker/params",
+		"/home/andrea/Documents/rhs1415/raspicam-0.1.3/src"
 	],
 	"file_history":
 	[
-		"/home/andrea/Documents/rhs1415/RHS.sublime-project",
-		"/home/andrea/Documents/rhs1415/VideoTracker/msg.hpp",
-		"/home/andrea/Documents/rhs1415/VideoTracker/calibration.cpp",
+		"/home/andrea/Documents/rhs1415/VideoTracker/hungarian.cpp",
+		"/home/andrea/Documents/rhs1415/VideoTracker/hungarian.hpp",
+		"/home/andrea/Documents/rhs1415/VideoTracker/Receiver.cpp",
+		"/home/andrea/Documents/rhs1415/VideoTracker/client.cpp",
+		"/home/andrea/Documents/rhs1415/VideoTracker/MovingObject.hpp",
+		"/home/andrea/Documents/rhs1415/VideoTracker/Snapshot.cpp",
+		"/home/andrea/Documents/rhs1415/VideoTracker/Snapshot.hpp",
+		"/home/andrea/Documents/rhs1415/VideoTracker/Aggregator.cpp",
+		"/home/andrea/Documents/rhs1415/VideoTracker/tracker2.cpp",
 		"/home/andrea/Documents/rhs1415/VideoTracker/server.cpp",
+		"/home/andrea/Documents/rhs1415/VideoTracker/Socket.cpp",
+		"/home/andrea/Documents/rhs1415/VideoTracker/calibration.cpp",
+		"/home/andrea/Documents/rhs1415/VideoTracker/CMakeLists.txt",
 		"/home/andrea/Documents/rhs1415/VideoTracker/params/camera_params.yaml",
+		"/home/andrea/Documents/rhs1415/VideoTracker/msg.hpp",
+		"/home/andrea/Documents/rhs1415/VideoTracker/calibration.hpp",
+		"/home/andrea/Documents/rhs1415/RHS.sublime-project",
 		"/home/andrea/Documents/rhs1415/VideoTracker/BackgroundSubtractionBasedDetector.hpp",
 		"/home/andrea/Documents/rhs1415/VideoTracker/ServerSocket.cpp",
-		"/home/andrea/Documents/rhs1415/VideoTracker/Socket.cpp",
 		"/home/andrea/Documents/rhs1415/VideoTracker/ServerSocket.hpp",
-		"/home/andrea/Documents/rhs1415/VideoTracker/Snapshot.hpp",
-		"/home/andrea/Documents/rhs1415/VideoTracker/Receiver.cpp",
 		"/home/andrea/Desktop/Projects/rhs1415/VideoTracker/BackgroundSubtractionBasedDetector.hpp",
 		"/home/andrea/Desktop/Projects/rhs1415/VideoTracker/Snapshot.hpp",
 		"/home/andrea/Desktop/Projects/rhs1415/VideoTracker/Snapshot.cpp",
 		"/home/andrea/Desktop/Projects/rhs1415/VideoTracker/calibration.cpp",
 		"/home/andrea/Desktop/Projects/rhs1415/VideoTracker/tracker2.cpp",
-		"/home/andrea/Documents/rhs1415/VideoTracker/CMakeLists.txt",
 		"/home/andrea/Documents/rhs1415/VideoTracker/SynchronizedPriorityQueue.hpp",
-		"/home/andrea/Documents/rhs1415/VideoTracker/hungarian.cpp",
-		"/home/andrea/Documents/rhs1415/VideoTracker/MovingObject.hpp",
-		"/home/andrea/Documents/rhs1415/VideoTracker/Snapshot.cpp",
 		"/home/andrea/Documents/rhs1415/VideoTracker/Socket.hpp",
 		"/home/andrea/Documents/rhs1415/VideoTracker/thread.hpp",
 		"/home/andrea/Documents/rhs1415/VideoTracker/IDetector.hpp",
 		"/home/andrea/Documents/rhs1415/VideoTracker/Timer.hpp",
-		"/home/andrea/Documents/rhs1415/VideoTracker/client.cpp",
-		"/home/andrea/Documents/rhs1415/VideoTracker/tracker2.cpp",
-		"/home/andrea/Documents/rhs1415/VideoTracker/Aggregator.cpp",
 		"/home/andrea/Documents/rhs1415/VideoTracker/tracker2_matching.cpp",
-		"/home/andrea/Documents/rhs1415/VideoTracker/hungarian.hpp",
 		"/home/andrea/Documents/rhs1415/VideoTracker/ColorBasedDetector.hpp",
 		"/home/andrea/Documents/rhs1415/VideoTracker/tracker.cpp",
 		"/home/andrea/Desktop/Projects/rhs1415/OpenCVTest/main.cpp",
@@ -400,7 +352,7 @@
 	],
 	"find":
 	{
-		"height": 27.0
+		"height": 41.0
 	},
 	"find_in_files":
 	{
@@ -414,6 +366,10 @@
 		"case_sensitive": false,
 		"find_history":
 		[
+			"return",
+			"650",
+			"unique_ptr",
+			"::",
 			"12",
 			"cv::",
 			"std::",
@@ -460,24 +416,24 @@
 	"groups":
 	[
 		{
-			"selected": 10,
+			"selected": 3,
 			"sheets":
 			[
 				{
 					"buffer": 0,
-					"file": "VideoTracker/client.cpp",
+					"file": "VideoTracker/SynchronizedPriorityQueue.hpp",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 2142,
+						"buffer_size": 1120,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								1980,
-								1980
+								155,
+								155
 							]
 						],
 						"settings":
@@ -486,7 +442,7 @@
 							"translate_tabs_to_spaces": false
 						},
 						"translation.x": 0.0,
-						"translation.y": 561.0,
+						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
 					"stack_index": 1,
@@ -494,30 +450,31 @@
 				},
 				{
 					"buffer": 1,
-					"file": "VideoTracker/CMakeLists.txt",
+					"file": "VideoTracker/client.cpp",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 821,
+						"buffer_size": 2886,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								0,
-								0
+								1110,
+								1110
 							]
 						],
 						"settings":
 						{
-							"syntax": "Packages/Text/Plain text.tmLanguage"
+							"syntax": "Packages/C++/C++.tmLanguage",
+							"translate_tabs_to_spaces": false
 						},
-						"translation.x": 0.0,
-						"translation.y": 0.0,
+						"translation.x": -0.0,
+						"translation.y": 255.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 10,
+					"stack_index": 2,
 					"type": "text"
 				},
 				{
@@ -526,15 +483,15 @@
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 3403,
+						"buffer_size": 5859,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								491,
-								491
+								2960,
+								2960
 							]
 						],
 						"settings":
@@ -543,43 +500,14 @@
 							"translate_tabs_to_spaces": false
 						},
 						"translation.x": 0.0,
-						"translation.y": 153.0,
+						"translation.y": 1326.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 8,
+					"stack_index": 3,
 					"type": "text"
 				},
 				{
 					"buffer": 3,
-					"file": "VideoTracker/Receiver.cpp",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 1620,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								668,
-								668
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/C++/C++.tmLanguage",
-							"translate_tabs_to_spaces": false
-						},
-						"translation.x": 0.0,
-						"translation.y": 153.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 6,
-					"type": "text"
-				},
-				{
-					"buffer": 4,
 					"file": "VideoTracker/params/camera_params.yaml",
 					"semi_transient": false,
 					"settings":
@@ -591,8 +519,8 @@
 						"selection":
 						[
 							[
-								97,
-								97
+								180,
+								180
 							]
 						],
 						"settings":
@@ -601,179 +529,6 @@
 						},
 						"translation.x": 0.0,
 						"translation.y": 0.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 5,
-					"type": "text"
-				},
-				{
-					"buffer": 5,
-					"file": "VideoTracker/msg.hpp",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 569,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								394,
-								394
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/C++/C++.tmLanguage"
-						},
-						"translation.x": 0.0,
-						"translation.y": 0.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 7,
-					"type": "text"
-				},
-				{
-					"buffer": 6,
-					"file": "VideoTracker/Snapshot.cpp",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 1391,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								382,
-								382
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/C++/C++.tmLanguage",
-							"translate_tabs_to_spaces": false
-						},
-						"translation.x": 0.0,
-						"translation.y": 51.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 9,
-					"type": "text"
-				},
-				{
-					"buffer": 7,
-					"file": "VideoTracker/calibration.hpp",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 3472,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								492,
-								492
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/C++/C++.tmLanguage"
-						},
-						"translation.x": 0.0,
-						"translation.y": 51.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 4,
-					"type": "text"
-				},
-				{
-					"buffer": 8,
-					"file": "VideoTracker/calibration.cpp",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 5404,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								857,
-								857
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/C++/C++.tmLanguage",
-							"tab_size": 4,
-							"translate_tabs_to_spaces": true
-						},
-						"translation.x": 0.0,
-						"translation.y": 663.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 3,
-					"type": "text"
-				},
-				{
-					"buffer": 9,
-					"file": "VideoTracker/tracker2.cpp",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 4476,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								2169,
-								2169
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/C++/C++.tmLanguage",
-							"translate_tabs_to_spaces": false
-						},
-						"translation.x": 0.0,
-						"translation.y": 1405.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 2,
-					"type": "text"
-				},
-				{
-					"buffer": 10,
-					"file": "VideoTracker/server.cpp",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 2794,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								2066,
-								2066
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/C++/C++.tmLanguage",
-							"translate_tabs_to_spaces": false
-						},
-						"translation.x": 0.0,
-						"translation.y": 1337.0,
 						"zoom_level": 1.0
 					},
 					"stack_index": 0,

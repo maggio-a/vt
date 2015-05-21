@@ -13,6 +13,8 @@ using namespace std;
 extern void *Receiver(void *arg);
 
 shared_ptr< vector< unique_ptr<Socket> > > connections;
+float ROI[] = { 0.0f, 0.0f };
+int res[] = { 300, 300 };
 
 static void split(const string &s, char delimiter, vector<string> &tokens_out) {
 	tokens_out.clear();
@@ -25,9 +27,25 @@ static void split(const string &s, char delimiter, vector<string> &tokens_out) {
 
 int main(int argc, char *argv[]) {
 	// need to try-catch
-	//string address = "127.0.0.1";
-	//string address = "192.168.1.72";
-	//channel.reset(new Socket(address, 12345));
+	if (argc < 3) {
+		cerr << "Usage: " << argv[0] << " ROI_X ROI_Y [windowWidth] [windowHeight]\n";
+		return -1;
+	} else {
+		float fv;
+		ROI[0] = ((fv = stof(argv[1])) > 0.0f) ? fv : 0.0f;
+		if (fv <= 0.0f)
+			cout << "Warning: ROI_X discarded (ROI_X <= 0)\n";
+
+		ROI[1] = ((fv = stof(argv[2])) > 0.0f) ? fv : 0.0f;
+		if (fv <= 0.0f)
+			cout << "Warning: ROI_Y discarded (ROI_X <= 0)\n";
+
+		int iv;
+		if (argc >= 4 && (iv = stoi(argv[3])) > 0)
+			res[0] = iv;
+		if (argc >= 5 && (iv = stoi(argv[4])) > 0)
+			res[1] = iv;
+	}
 
 	connections.reset(new vector< unique_ptr<Socket> >);
 	vector<string> tokens;
@@ -92,4 +110,6 @@ int main(int argc, char *argv[]) {
 
 	for (auto &channel : *connections)
 		channel->close();
+
+	return 0;
 }

@@ -4,6 +4,7 @@
 #include <set>
 #include <deque>
 #include <cstdlib>
+#include <cmath>
 #include <unistd.h>
 #include <opencv2/opencv.hpp>
 
@@ -16,8 +17,16 @@ using namespace std;
 using namespace cv;
 using namespace rhs;
 
-#define GROUND_WIDTH 650
-#define GROUND_HEIGHT 650
+//#define GROUND_WIDTH 650
+//#define GROUND_HEIGHT 650
+extern float ROI[2];
+extern int res[2];
+
+static int naiveScale(float inMax, float outMax, float val) {
+	float step = outMax / inMax;
+	return int(val * step);
+
+}
 
 static Scalar colors[] = {
 	Scalar(50 , 180,  96),
@@ -42,13 +51,17 @@ struct TrackingData {
 		}
 	}
 
-	void Draw(Mat &image, int roi_xmin, int roi_xmax, int roi_ymin, int roi_ymax) {
+	void Draw(Mat &image, int roi_xmax, int roi_ymax) {
 		int font = FONT_HERSHEY_PLAIN;
 		double font_scale = 1.0;
 		vector<Point2i> trace;
+		Size screen = image.size();
 		for (auto &ipt : track) {
-			if (ipt.x > roi_xmin && ipt.x < roi_xmax && ipt.y > 0 && ipt.y < roi_ymax) {
-				Point2i target = Point2i(ipt.x,roi_ymax-ipt.y);
+			if (ipt.x > 0 && ipt.x < roi_xmax && ipt.y > 0 && ipt.y < roi_ymax) {
+				int px = naiveScale(roi_xmax, screen.width, ipt.x);
+				int py = naiveScale(roi_ymax, screen.height, ipt.y);
+				Point2i target = Point2i(px, screen.height-py); // flips the y coordinate
+
 				circle(image, target, 5, color, 1, CV_AA);
 
 				if (ipt == track.front()) {
@@ -103,15 +116,14 @@ void *Aggregator(void *arg) {
 	Mat measurement(2, 1, CV_32F);
 	int c = 0;
 	namedWindow(windowName);
+	long distMax = long( std::sqrt(ROI[0]*ROI[0] + ROI[1]*ROI[1]) );
 	while (true) {
-		Mat image = Mat::zeros(650, 650, CV_8UC3);
+		Mat image = Mat::zeros(res[1], res[0], CV_8UC3); // zeros(rows, columns, type): rows -> y, columns -> x
 
 		try {
 			snap = snapshots.Pop();
 		} catch (SynchronizedPriorityQueue<Snapshot>::QueueClosed) {
-			destroyWindow(windowName);
-			waitKey(1000);
-			return 0;
+			break;
 		}
 		float dt = snap.time() - prevSnapTime;
 
@@ -134,7 +146,7 @@ void *Aggregator(void *arg) {
 		if (snap.size() > 0) { // if we detected objects
 			set<size_t> used;
 			if (predictions.size() > 0) { // if already tracking objects, compute the matching 
-				vector<size_t> matching = ComputeMatching(predictions, snap.data());
+				vector<size_t> matching = ComputeMatching(predictions, snap.data(), distMax);
 				for (size_t i = 0; i < matching.size(); ++i) {
 					MovingObject &tracker = data[i].object;
 					size_t j = matching[i];
@@ -173,7 +185,7 @@ void *Aggregator(void *arg) {
 				break;
 			}
 			td.AddMarker(Point2i(pt.x, pt.y));
-			td.Draw(image, 0, GROUND_WIDTH, 0, GROUND_HEIGHT);
+			td.Draw(image, ROI[0], ROI[1]);
 		}
 
 		// if trackers lost their object for more than a given threshold, remove them
@@ -191,5 +203,7 @@ void *Aggregator(void *arg) {
 		prevSnapTime = snap.time();
 	}
 
+	destroyWindow(windowName);
+	waitKey(100);
 	return 0;
 }

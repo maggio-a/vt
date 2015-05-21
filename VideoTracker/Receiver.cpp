@@ -66,5 +66,7 @@ void *Receiver(void *arg) {
 	queue.Close();
 	agg.join();
 
+	cout << "Receiver stopped\n";
+
 	return 0;
 }
