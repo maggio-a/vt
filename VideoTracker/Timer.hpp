@@ -5,18 +5,20 @@
 
 namespace rhs {
 
+// class Timer
 class Timer {
 public:
-	Timer() { this->restart(); }
+	Timer() { this->Restart(); }
 	~Timer() { }
 
-	float timeElapsed() const {
+	// Returns the time in seconds from the last Restart()
+	float TimeElapsed() const {
 		struct timespec now;
 		::clock_gettime(CLOCK_MONOTONIC, &now);
 		return float(((now.tv_sec*1000.0 + now.tv_nsec/1000000.0) - (tbase.tv_sec*1000.0 + tbase.tv_nsec/1000000.0)) / 1000.0);
 	}
 
-	void restart() { ::clock_gettime(CLOCK_MONOTONIC, &tbase); }
+	void Restart() { ::clock_gettime(CLOCK_MONOTONIC, &tbase); }
 
 private:
 	struct timespec tbase;

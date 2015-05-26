@@ -66,13 +66,13 @@ struct TrackingData {
 
 				if (ipt == track.front()) {
 					Point2f pt;
-					switch (object.getObjectState()) {
+					switch (object.GetKfState()) {
 					case MovingObject::INITIALIZED:
 					case MovingObject::AFTER_UPDATE:
-						pt = object.getEstimatePost();
+						pt = object.GetEstimatePost();
 						break;
 					case MovingObject::AFTER_PREDICT:
-						pt = object.getEstimatePre();
+						pt = object.GetEstimatePre();
 						break;
 					}
 					stringstream ss;
@@ -92,7 +92,7 @@ struct TrackingData {
 	struct Outdated {
 		float threshold;
 		Outdated(float th) : threshold(th) {  }
-		bool operator()(const struct TrackingData &data) const { return (data.object.timeFromLastMeasurement() > threshold); }
+		bool operator()(const struct TrackingData &data) const { return (data.object.TimeFromLastMeasurement() > threshold); }
 	};
 };
 
@@ -125,28 +125,25 @@ void *Aggregator(void *arg) {
 		} catch (SynchronizedPriorityQueue<Snapshot>::QueueClosed) {
 			break;
 		}
-		float dt = snap.time() - prevSnapTime;
+		float dt = snap.Time() - prevSnapTime;
 
 		//cout << "dt:" << dt << "(" <<snap.time() << ", " << prevSnapTime << ")" << endl;
 		if (dt <= 0) {
-			cout << "skipping ********" << dt << endl;
-		//	for (size_t i = 0; i < snap.size(); ++i) {
-		//		cout << snap[i] << " " << endl;
-		//	} cout << "*********\n";
-		//	continue;
+			cout << "skipping (dt = " << dt << ")\n";
+			continue;
 		}
 
 		// Predict step
 		vector<Point2f> predictions; // coupled with the objects array
 		for (auto &td : data) {
-			predictions.push_back(td.object.predictPosition(dt));
+			predictions.push_back(td.object.PredictPosition(dt));
 		}
 
 		// Compute matchings
 		if (snap.size() > 0) { // if we detected objects
 			set<size_t> used;
 			if (predictions.size() > 0) { // if already tracking objects, compute the matching 
-				vector<size_t> matching = ComputeMatching(predictions, snap.data(), distMax);
+				vector<size_t> matching = ComputeMatching(predictions, snap.Data(), distMax);
 				for (size_t i = 0; i < matching.size(); ++i) {
 					MovingObject &tracker = data[i].object;
 					size_t j = matching[i];
@@ -156,7 +153,7 @@ void *Aggregator(void *arg) {
 						measurement.at<float>(0) = match.x;
 						measurement.at<float>(1) = match.y;
 						assert(used.insert(j).second == true);
-						tracker.feedback(measurement);
+						tracker.Feedback(measurement);
 					} else {
 						// The predicted position of data[i] did not match any detection
 					}
@@ -175,13 +172,13 @@ void *Aggregator(void *arg) {
 
 		for (auto &td : data) {
 			Point2f pt;
-			switch (td.object.getObjectState()) {
+			switch (td.object.GetKfState()) {
 			case MovingObject::INITIALIZED:
 			case MovingObject::AFTER_UPDATE:
-				pt = td.object.getEstimatePost();
+				pt = td.object.GetEstimatePost();
 				break;
 			case MovingObject::AFTER_PREDICT: // kalman filter was not updated
-				pt = td.object.getEstimatePre();
+				pt = td.object.GetEstimatePre();
 				break;
 			}
 			td.AddMarker(Point2i(pt.x, pt.y));
@@ -201,7 +198,7 @@ void *Aggregator(void *arg) {
 			imwrite(ss.str(), image);
 		}
 
-		prevSnapTime = snap.time();
+		prevSnapTime = snap.Time();
 	}
 
 	Mat image = Mat::zeros(res[1], res[0], CV_8UC3);

@@ -5,10 +5,11 @@
 #include <sstream>
 
 #include "Socket.hpp"
-#include "msg.hpp"
+#include "Msg.hpp"
 #include "thread.hpp"
 
 using namespace std;
+using namespace rhs;
 
 extern void *Receiver(void *arg);
 
@@ -51,7 +52,7 @@ int main(int argc, char *argv[]) {
 	vector<string> tokens;
 
 	bool tracking = false;
-	std::unique_ptr<thread> receiver(nullptr);
+	std::unique_ptr<thread> receiver;
 
 	for (;;) {
 		string cmd, s;
@@ -81,13 +82,17 @@ int main(int argc, char *argv[]) {
 			} else if (tracking) {
 				cout << "System already tracking\n";
 			} else {
+				// activate remote sensors
+				for (auto &channel : *connections) {
+					channel->Send(Message(Message::START_CAMERA));
+				}
 				receiver.reset(new thread(Receiver, 0));
 				tracking = true;
 			}
 		} else if (cmd == "stop") {
 			if (tracking) {
 				for (auto &channel : *connections)
-					channel->Send(rhs::Message(rhs::STOP_CAMERA));
+					channel->Send(Message(Message::STOP_CAMERA));
 				tracking = false;
 				receiver->join();
 			} else {
@@ -96,7 +101,7 @@ int main(int argc, char *argv[]) {
 		} else if (cmd == "close") {
 			if (tracking) {
 				for (auto &channel : *connections) {
-					channel->Send(rhs::Message(rhs::STOP_CAMERA));
+					channel->Send(Message(Message::QUIT));
 				}
 				tracking = false;
 				receiver->join();

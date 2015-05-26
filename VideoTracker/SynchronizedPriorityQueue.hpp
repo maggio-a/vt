@@ -5,10 +5,15 @@
 
 namespace rhs {
 
+// class SynchronizedPriorityQueue
+// Provides synchronization in a producer(s)-consumer(s) setting. Allows a producer to close the queue
+// in order to notify a consumer not to wait for further insertions
 template<class T> class SynchronizedPriorityQueue {
 public:
+	// thrown when attempting to perform an operation on a closed queue
 	struct QueueClosed {  };
 
+	// Constructs an open empty queue
 	SynchronizedPriorityQueue() : pq(), closed(false) {
 		pthread_mutex_init(&mtx, 0);
 		pthread_cond_init(&cond, 0);
@@ -19,6 +24,7 @@ public:
 		pthread_cond_destroy(&cond);
 	}
 
+	// Inserts an item in the queue. Throws SynchronizedPriorityQueue::QueueClosed if the queue is closed
 	void Push(T item) {
 		pthread_mutex_lock(&mtx);
 		if (closed) {
@@ -30,6 +36,8 @@ public:
 		pthread_mutex_unlock(&mtx);
 	}
 
+	// Removes and returns the first element of the queue, blocking if the queue is empty.
+	// Throws SynchronizedPriorityQueue::QueueClosed if the queue is empty and closed,a voiding to block indefinitely
 	T Pop() {
 		pthread_mutex_lock(&mtx);
 		while (pq.empty() && !closed) {
@@ -46,6 +54,7 @@ public:
 		}
 	}
 
+	// Closes the queue, signaling any waiting consumer of the event
 	void Close() {
 		pthread_mutex_lock(&mtx);
 		closed = true;

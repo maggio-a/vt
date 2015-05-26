@@ -13,12 +13,14 @@
 
 using namespace std;
 
+namespace rhs {
+
 serverSocketHandle_t CreateServerSocket(int port, int backlog) {
 	return serverSocketHandle_t(new ServerSocket(port, backlog));
 }
 
 ServerSocket::ServerSocket(int p, int bl) : port(p), backlog(bl), sck(-1), closed(true), err(0) {
- 	struct sockaddr_in server_info;
+	struct sockaddr_in server_info;
 
 	sck = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
 	if (sck < 0) {
@@ -71,3 +73,5 @@ void ServerSocket::Close() {
 		}
 	}
 }
+
+} // rhs namespace

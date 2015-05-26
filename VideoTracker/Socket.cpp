@@ -11,10 +11,11 @@
 #include <unistd.h>
 #include <sys/select.h>
 
-#include "msg.hpp"
+#include "Msg.hpp"
 
 using namespace std;
-using namespace rhs;
+
+namespace rhs {
 
 socketHandle_t CreateSocket(std::string address, int port) {
 	return socketHandle_t(new Socket(address, port));
@@ -87,7 +88,6 @@ Message Socket::Receive() {
 	}
 }
 
-// FIXME needs integrity checks
 void Socket::Recv(void *base, size_t n) {
 	ssize_t status = ::recv(fd, base, n, MSG_WAITALL); 
 	if (status == 0) {
@@ -107,7 +107,6 @@ void Socket::Send(const Message &m) {
 		Send(m.payload.c_str(), host_sz+1);
 }
 
-// FIXME needs integrity checks
 void Socket::Send(const void *base, size_t n) {
 	if (::send(fd, base, n, MSG_NOSIGNAL) < 0) {
 		perror("send");
@@ -125,3 +124,5 @@ void Socket::Close() {
 		}
 	}
 }
+
+} // rhs namespace

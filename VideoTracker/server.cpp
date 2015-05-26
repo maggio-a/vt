@@ -8,27 +8,34 @@
 #include "ServerSocket.hpp"
 #include "Socket.hpp"
 #include "thread.hpp"
-#include "msg.hpp"
+#include "Msg.hpp"
 #include "Timer.hpp"
 
 using std::cout;
 using std::cerr;
 using std::endl;
+using std::unique_ptr;
+
+using namespace rhs;
 
 extern void *tracker2(void *arg);
 
+// Boolean flag to control the camera thread
 bool tracking = false;
+// Communication channel with the remote controller
 socketHandle_t channel;
-rhs::Timer live;
-rhs::CameraParams params(rhs::CameraParamsPath);
+// Run timer to obtain the timestamp of each capture
+Timer live;
+// Parameters of the camera :>
+CameraParams params(rhs::CameraParamsPath);
 
 void help(char *program) {
-	std::cout << "Usage: " << program << " [-c width height]\n"
-	          << " -c option to configure the coordinate transformation\n"
-	          << "   width: width of the ground rectangle\n"
-	          << "   height: height of the ground rectangle\n"
-	          << "   the ground rectangle on the image plane must\n"
-	          << "   be drawn according to the ground coordinates (0,0)->(width,0)->(width,height)->(0,height)\n";
+	cout << "Usage: " << program << " [-c width height]\n"
+	     << " -c option to configure the coordinate transformation\n"
+	     << "   width: width of the ground rectangle\n"
+	     << "   height: height of the ground rectangle\n"
+	     << "   the ground rectangle on the image plane must\n"
+	     << "   be drawn according to the ground coordinates (0,0)->(width,0)->(width,height)->(0,height)\n";
 }
 
 int main(int argc, char *argv[]) {
@@ -61,40 +68,38 @@ int main(int argc, char *argv[]) {
 
 	cout << "Camera server running" << endl;
 
-	while (true) { // handles 1 connection at a time
+	for (;;) { // handles 1 connection at a time
 		bool done = false;
 		channel = server->Accept();
 		cout << "Connection accepted...\n";
 	
-		thread *cam_service;
+		unique_ptr<rhs::thread> cam_service;
 	
 		while (!done) {
 			try {
-				rhs::Message msg = channel->Receive();
+				Message msg = channel->Receive();
 	
 				switch (msg.type) {
-				case rhs::START_CAMERA:
+				case Message::START_CAMERA:
 					if (!tracking) {
 						cout << "Starting capture\n";
-						live.restart();
+						live.Restart();
 						tracking = true;
 						try {
-							cam_service = new thread(tracker2, 0);
+							cam_service.reset(new rhs::thread(tracker2, 0));
 						}
 						catch (int error) {
-							cerr << "disaster\n";
-							errno = error;
-							perror("thread");
+							perror("rhs::thread");
 						}
 					}
 					break;
-				case rhs::QUIT:
+				case Message::QUIT:
 					done = true;
-				case rhs::STOP_CAMERA:
+					//follows through
+				case Message::STOP_CAMERA:
 					if (tracking) {
 						tracking = false;
 						cam_service->join();
-						delete cam_service;
 					}
 					break;
 				default:
@@ -105,7 +110,6 @@ int main(int argc, char *argv[]) {
 				if (tracking) {
 					tracking = false;
 					cam_service->join();
-					delete cam_service;
 				}
 				if (status < 0) {
 					errno = status;

@@ -13,21 +13,21 @@
 #include "MovingObject.hpp"
 #include "Timer.hpp"
 #include "Snapshot.hpp"
+#include "Msg.hpp"
 #include "calibration.hpp"
 
 
 #include <sstream>
 
-extern bool tracking;
-extern std::unique_ptr<Socket> channel;
-extern rhs::Timer live;
-extern rhs::CameraParams params;
-
 using namespace std;
 using namespace cv;
+using namespace rhs;
 
-//const int MIN_OBJECT_AREA = 20*20;
-//const int MAX_OBJECT_AREA = FRAME_HEIGHT*FRAME_WIDTH/1.5;
+
+extern bool tracking;
+extern socketHandle_t channel;
+extern Timer live;
+extern CameraParams params;
 
 
 Point2f transformPoint(Point2f src, const Mat &transform) {
@@ -99,14 +99,14 @@ void *tracker2(void *arg) {
 	stringstream ss;
 	ss << groundWidth << " " << groundHeight;
 	try {
-		channel->Send(rhs::Message(rhs::STREAM_START, ss.str()));
+		channel->Send(Message(Message::STREAM_START, ss.str()));
 	} catch(...) {
 		return 0;
 	}
 
 	// warm up camera (3 seconds)
-	rhs::Timer tlocal;
-	while(tlocal.timeElapsed() < 3.0f) {
+	Timer tlocal;
+	while(tlocal.TimeElapsed() < 3.0f) {
 		cam.grab();
 	}
 
@@ -116,14 +116,14 @@ void *tracker2(void *arg) {
 	bool resizeCapture = (params.resWidth != params.frameWidth) || (params.resHeight != params.frameHeight);
 	vector< vector<Point2i> > contours;
 
-	rhs::BackgroundSubtractionBasedDetector detector(params.bgsHistory, params.bgsThreshold, params.bgsMorphX, params.bgsMorphY, params.bgsLearningRate);
+	BackgroundSubtractionBasedDetector detector(params.bgsHistory, params.bgsThreshold, params.bgsMorphX, params.bgsMorphY, params.bgsLearningRate);
 
 	float timestamp;
 	int c=1;
-	tlocal.restart();
+	tlocal.Restart();
 	while (tracking) {
 		cam.grab();
-		timestamp = live.timeElapsed();
+		timestamp = live.TimeElapsed();
 		cam.retrieve(capture);
 
 		if (resizeCapture) {
@@ -133,15 +133,15 @@ void *tracker2(void *arg) {
 			detector.DetectObjects(capture, contours);
 		}
 
-		rhs::Snapshot snap(timestamp);
+		Snapshot snap(timestamp);
 		for (size_t j = 0; j < contours.size(); ++j) {
 			Rect b = boundingRect(contours[j]);
 			Point2f imgPoint(b.x + b.width / 2.0f, b.y + b.height / 2.0f);
 			Point2d groundPoint = transformPoint(imgPoint, img2world);
-			snap.addObject(groundPoint);
+			snap.AddObject(groundPoint);
 		}
 
-		rhs::Message msg(rhs::OBJECT_DATA, snap.str());
+		Message msg(Message::OBJECT_DATA, snap.str());
 		try {
 			channel->Send(msg);
 		} catch (...) {
@@ -160,12 +160,12 @@ void *tracker2(void *arg) {
 	}
 
 	try {
-		channel->Send(rhs::Message(rhs::STREAM_STOP));
+		channel->Send(Message(Message::STREAM_STOP));
 	} catch (...) {
 		return 0;
 	}
 
-	cout << "Retrieved " << c << " frames in " << tlocal.timeElapsed() << " seconds.\n";
+	cout << "Retrieved " << c << " frames in " << tlocal.TimeElapsed() << " seconds.\n";
 
 	cam.release();
 

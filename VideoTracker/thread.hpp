@@ -3,10 +3,16 @@
 
 #include <pthread.h>
 
+namespace rhs {
+
+// class thread
+// Just wraps the thread id and allows to join, eventually the code should be ported to use C++11 threads
+// EXCEPTIONS: If any error occurs, the error code is thrown
 class thread {
 public:
+	// Thread is spawned upon construction
 	thread(void *(*fptr) (void *), void *arg) {
-		int status = pthread_create(&_tid, NULL, fptr, arg);
+		int status = pthread_create(&tid, NULL, fptr, arg);
 		if (status) 
 			throw status;
 	}
@@ -14,13 +20,15 @@ public:
 	~thread() {  }
 
 	void join() {
-		int status = pthread_join(_tid, NULL);
+		int status = pthread_join(tid, NULL);
 		if (status)
 			throw status;
 	}
 
 private:
-	pthread_t _tid;
+	pthread_t tid;
 };
+
+} // rhs namespace
 
 #endif

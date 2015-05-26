@@ -26,13 +26,13 @@ Snapshot::Snapshot(float timestamp) : tstamp(timestamp), pts() {
 }
 
 //FIXME assumes the string is well formed
+// format is timestamp#pt1#pt2#pt3...
+// each point is written as x:y
 Snapshot::Snapshot(string description) : tstamp(0.0f), pts() {
 	vector<string> tokens;
 	split(description, '#', tokens);
+	// reads timestamp
 	tstamp = float( atof(tokens[0].c_str()) );
-	//cout << tokens[0].c_str() << "CCCCCCCCCCCCCCCCCCCC" << endl;
-	//cout.precision(9);
-	//cout << 2.453453 << "AAAAAAAAAAAAAAAAA" << endl;
 	if (tokens.size() > 1) { // reads detected points
 		for (size_t i = 1; i < tokens.size(); ++i) {
 			vector<string> coords;
@@ -46,13 +46,9 @@ Snapshot::~Snapshot() {
 
 }
 
-void Snapshot::addObject(Point2f point) {
-	pts.push_back(point);
-}
-
 // format is timestamp#pt1#pt2#pt3...
 // each point is written as x:y
-string Snapshot::str() {
+string Snapshot::str() const {
 	stringstream ss;
 	ss << tstamp;
 	for (size_t i = 0; i < pts.size(); ++i) {

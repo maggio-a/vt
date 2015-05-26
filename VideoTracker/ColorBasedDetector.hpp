@@ -8,14 +8,22 @@
 
 namespace rhs {
 
+// class ColorBasedDetector
+// Performs object detection using color filtering. It works by converting the original image
+// in the HSV color space and performing a range test on the pixel values
 class ColorBasedDetector : public IDetector {
 public:
+
+	// Constructor
+	// HSVMin and HSVMax are triplets determining the minimum and maximum values for each component
+	// (Hue, Saturation and Value) once the image gets converted to the HSV color space
 	ColorBasedDetector(cv::Scalar HSVMin, cv::Scalar HSVMax) 
 			: rangeMin(HSVMin), rangeMax(HSVMax), hsv(), mask() {
 	}
 
 	~ColorBasedDetector() {  }
 
+	// Implementation of the IDetector interface
 	void DetectObjects(const cv::Mat &image, std::vector< std::vector<cv::Point2i> > &contours_out) {
 		cv::cvtColor(image, hsv, CV_BGR2HSV);
 		cv::inRange(hsv, rangeMin, rangeMax, mask);

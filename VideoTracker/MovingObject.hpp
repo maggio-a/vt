@@ -9,21 +9,28 @@
 
 namespace rhs {
 
+// class MovingObject
+// This class provides a wrapper for a kalman filter which models the state of a detected object
+// in the scene.
+// The state of an object is defined as its position and its speed, and the measurement matrix 
+// is updated at each step with the time delta from the previous step.
 class MovingObject {
 public:
+	// State of the underlying kalman filter in the predict-update cycle
 	enum State { INITIALIZED, AFTER_PREDICT, AFTER_UPDATE };
 
-	MovingObject(std::string tag, cv::Point2f pt) : state(INITIALIZED), kf(4, 2, 0, CV_32F), objTag(tag), lastMeasurement() {
+	MovingObject(std::string tg, cv::Point2f pt) : state(INITIALIZED), kf(4, 2, 0, CV_32F), tag(tg), lastMeasurement() {
 		/* transition matrix will be updated at each step:
 			1   0  dt   0
 			0   1   0  dt
-			0   1   1   1
+			0   0   1   0
 			0   0   0   1 */
 		cv::setIdentity(kf.transitionMatrix);
 	
 		/* measurement is 
 			1   0   0   0
-			0   1   0   0 */
+			0   1   0   0
+		   (speed is not measured) */
 		kf.measurementMatrix = cv::Mat::zeros(2, 4, CV_32F);
 		kf.measurementMatrix.at<float>(0,0) = 1.0f;
 		kf.measurementMatrix.at<float>(1,1) = 1.0f;
@@ -37,7 +44,9 @@ public:
 
 	~MovingObject() {  }
 
-	cv::Point2f predictPosition(float dt) {
+	// Predicts the position of the object dt seconds after the last step
+	// the parameter dt can - of course - be a fractional value
+	cv::Point2f PredictPosition(float dt) {
 		kf.transitionMatrix.at<float>(1,3) = dt;
 		kf.transitionMatrix.at<float>(0,2) = dt;
 		const cv::Mat &prediction = kf.predict();
@@ -47,31 +56,38 @@ public:
 		return cv::Point2f(prediction.at<float>(0), prediction.at<float>(1));
 	}
 
-	cv::Point2f getEstimatePre() const {
-		return cv::Point2f(kf.statePre.at<float>(0), kf.statePre.at<float>(1));
-	}
-
-	cv::Point2f getEstimatePost() const {
-		return cv::Point2f(kf.statePost.at<float>(0), kf.statePost.at<float>(1));
-	}
-
-	void feedback(const cv::Mat &measurement) {
+	// Corrects the Kalman filter with the given measurement
+	void Feedback(const cv::Mat &measurement) {
 		kf.correct(measurement);
-		lastMeasurement.restart();
+		lastMeasurement.Restart();
 		state = AFTER_UPDATE;
 	}
 
-	State getObjectState() const { return state; }
+	// Returns the coordinates estimated at the last step
+	cv::Point2f GetEstimatePre() const {
+		return cv::Point2f(kf.statePre.at<float>(0), kf.statePre.at<float>(1));
+	}
 
-	std::string tag() const { return objTag; }
+	// Returns the coordinates estimated after the state has been corrected at the current step
+	// This is meaningless if MovingObject::Feedback was not called after MovingObject::PredictPosition
+	// (maybe because no measurement was available)
+	cv::Point2f GetEstimatePost() const {
+		return cv::Point2f(kf.statePost.at<float>(0), kf.statePost.at<float>(1));
+	}
 
-	float timeFromLastMeasurement() const { return lastMeasurement.timeElapsed(); }
+	// Returns the state of the Kalman filter in the predict-update cycle
+	State GetKfState() const { return state; }
 
+	// Returns the tag given to this object
+	std::string Tag() const { return tag; }
+
+	// Time elapsed since the last measurement has been applied (FIXME: THIS DOES NOT BELONG HERE)
+	float TimeFromLastMeasurement() const { return lastMeasurement.TimeElapsed(); }
 
 private:
 	State state;
 	cv::KalmanFilter kf;
-	std::string objTag;
+	std::string tag;
 	Timer lastMeasurement;
 };
 

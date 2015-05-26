@@ -3,7 +3,7 @@
 
 #include "thread.hpp"
 #include "SynchronizedPriorityQueue.hpp"
-#include "msg.hpp"
+#include "Msg.hpp"
 #include "Socket.hpp"
 #include "Snapshot.hpp"
 
@@ -16,10 +16,6 @@ extern shared_ptr< vector<socketHandle_t> > connections;
 void *Aggregator(void *arg);
 
 void *Receiver(void *arg) {
-	// activate remote sensors
-	for (auto &channel : *connections) {
-		channel->Send(rhs::Message(rhs::START_CAMERA, string("Hello!")));
-	}
 
 	SynchronizedPriorityQueue<Snapshot> queue;
 
@@ -33,10 +29,10 @@ void *Receiver(void *arg) {
 		for (size_t i = 0; i < streaming.size(); i++) {
 			socketHandle_t channel = (*connections)[i];
 			if (!streaming[i]) {
-				Message hdr = channel->Receive();
-				if (hdr.type == rhs::STREAM_START)
+				Message m = channel->Receive();
+				if (m.type == Message::STREAM_START)
 					streaming[i] = true;
-				else //received wrong message
+				else //received wrong message, keep iterating and hope the next one is right (fixme)
 					allready = false;
 			}
 		}
@@ -51,10 +47,10 @@ void *Receiver(void *arg) {
 				socketHandle_t channel = (*connections)[i];
 				try {
 					Message m = channel->Receive(50);
-					if (m.type == rhs::OBJECT_DATA) {
-						cout << i << ": " << m.payload.substr(0, 10) << endl;
+					if (m.type == Message::OBJECT_DATA) {
+						//cout << i << ": " << m.payload.substr(0, 10) << endl;
 						queue.Push(Snapshot(m.payload));
-					} else if (m.type == rhs::STREAM_STOP) { // this channel has stopped streaming
+					} else if (m.type == Message::STREAM_STOP) { // this channel has stopped streaming
 						streaming[i] = false; 
 					}
 				} catch (Socket::Timeout) {  }
