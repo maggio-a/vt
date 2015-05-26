@@ -13,61 +13,61 @@
 
 using namespace std;
 
+serverSocketHandle_t CreateServerSocket(int port, int backlog) {
+	return serverSocketHandle_t(new ServerSocket(port, backlog));
+}
 
-ServerSocket::ServerSocket(int p, int bl) : _port(p), _backlog(bl) {
+ServerSocket::ServerSocket(int p, int bl) : port(p), backlog(bl), sck(-1), closed(true), err(0) {
  	struct sockaddr_in server_info;
 
-	_sck = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
-	if (_sck < 0) {
+	sck = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
+	if (sck < 0) {
 		perror("socket");
-		throw _err = errno;
+		throw err = errno;
 	}
 	server_info.sin_family = AF_INET;
-	server_info.sin_port = _port;
+	server_info.sin_port = port;
 	server_info.sin_addr.s_addr = htonl(INADDR_ANY);
-	if(bind(_sck, (struct sockaddr *) &server_info, sizeof(server_info))) {
+	if(bind(sck, (struct sockaddr *) &server_info, sizeof(server_info))) {
 		perror("bind");
-		throw _err = errno;
+		throw err = errno;
 	}
-	if (listen(_sck, _backlog)) {
+	if (listen(sck, backlog)) {
 		perror("listen");
-		throw _err = errno;
+		throw err = errno;
 	}
-	_closed = false;
+	closed = false;
 }
 
 ServerSocket::~ServerSocket() {
-	if (!_closed) {
+	if (!closed) {
 		try {
-			close();
+			Close();
 		} catch (...) {
 			cerr << "Failed closing server socket" << '\n';
-			perror("close");
 		}
 	}
 }
 
-Socket * ServerSocket::accept() {
+socketHandle_t ServerSocket::Accept() {
 	struct sockaddr_in incoming_addr;
 	socklen_t incoming_addrsize = sizeof(incoming_addr);
-	int incoming = ::accept(_sck, (struct sockaddr *) &incoming_addr, &incoming_addrsize);
+	int incoming = accept(sck, (struct sockaddr *) &incoming_addr, &incoming_addrsize);
 	if (incoming < 0) {
-		perror("accept");
-		throw _err = errno;
+		perror("ServerSocket::Accept");
+		throw err = errno;
 	} else {
-		//Socket s(incoming);
-		//return s;
-		return new Socket(incoming);
+		return socketHandle_t(new Socket(incoming));
 	}
 }
 
-void ServerSocket::close() {
-	if (!_closed) {
-		if (::close(_sck)) {
-			perror("close");
-			throw _err = errno;
+void ServerSocket::Close() {
+	if (!closed) {
+		if (close(sck)) {
+			perror("ServerSocket::Close");
+			throw err = errno;
 		} else {
-			_closed = true;
+			closed = true;
 		}
 	}
 }

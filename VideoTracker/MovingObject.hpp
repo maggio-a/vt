@@ -2,6 +2,7 @@
 #define RHS_MOVINGOBJECT_HDR
 
 #include <string>
+#include <cassert>
 #include <opencv2/opencv.hpp>
 
 #include "Timer.hpp"

@@ -11,7 +11,7 @@
 using namespace rhs;
 using namespace std;
 
-extern shared_ptr< vector< unique_ptr<Socket> > > connections;
+extern shared_ptr< vector<socketHandle_t> > connections;
 
 void *Aggregator(void *arg);
 
@@ -31,7 +31,7 @@ void *Receiver(void *arg) {
 	while (true) {
 		bool allready = true;
 		for (size_t i = 0; i < streaming.size(); i++) {
-			unique_ptr<Socket> &channel = (*connections)[i];
+			socketHandle_t channel = (*connections)[i];
 			if (!streaming[i]) {
 				Message hdr = channel->Receive();
 				if (hdr.type == rhs::STREAM_START)
@@ -48,7 +48,7 @@ void *Receiver(void *arg) {
 		for (size_t i = 0; i < streaming.size(); i++) {
 			if (streaming[i]) {
 				alldone = false;
-				unique_ptr<Socket> &channel = (*connections)[i];
+				socketHandle_t channel = (*connections)[i];
 				try {
 					Message m = channel->Receive(50);
 					if (m.type == rhs::OBJECT_DATA) {

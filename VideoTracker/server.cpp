@@ -18,7 +18,7 @@ using std::endl;
 extern void *tracker2(void *arg);
 
 bool tracking = false;
-std::unique_ptr<Socket> channel(nullptr);
+socketHandle_t channel;
 rhs::Timer live;
 rhs::CameraParams params(rhs::CameraParamsPath);
 
@@ -57,13 +57,13 @@ int main(int argc, char *argv[]) {
 	}
 
 	// need to try-catch
-	std::auto_ptr<ServerSocket> server(new ServerSocket(12345, 5));
+	serverSocketHandle_t server = CreateServerSocket(rhs::SERVER_PORT_DEFAULT, 5);
 
 	cout << "Camera server running" << endl;
 
 	while (true) { // handles 1 connection at a time
 		bool done = false;
-		channel.reset(server->accept());
+		channel = server->Accept();
 		cout << "Connection accepted...\n";
 	
 		thread *cam_service;
@@ -82,7 +82,7 @@ int main(int argc, char *argv[]) {
 							cam_service = new thread(tracker2, 0);
 						}
 						catch (int error) {
-							cerr << "disaster" << endl;
+							cerr << "disaster\n";
 							errno = error;
 							perror("thread");
 						}
@@ -115,11 +115,11 @@ int main(int argc, char *argv[]) {
 			}
 		} //while handling connection
 	
-		channel->close();
+		channel->Close();
 		cout << "Disconnected\n";
 	}
 
-	server->close();
+	server->Close();
 	cout << "here\n";
 	return 0;
 }

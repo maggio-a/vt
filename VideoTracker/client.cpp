@@ -12,7 +12,7 @@ using namespace std;
 
 extern void *Receiver(void *arg);
 
-shared_ptr< vector< unique_ptr<Socket> > > connections;
+shared_ptr< vector<socketHandle_t> > connections;
 float ROI[] = { 0.0f, 0.0f };
 int res[] = { 300, 300 };
 
@@ -47,9 +47,8 @@ int main(int argc, char *argv[]) {
 			res[1] = iv;
 	}
 
-	connections.reset(new vector< unique_ptr<Socket> >);
+	connections.reset(new vector<socketHandle_t>);
 	vector<string> tokens;
-	//msg_code cmd = STOP_CAMERA;
 
 	bool tracking = false;
 	std::unique_ptr<thread> receiver(nullptr);
@@ -73,7 +72,7 @@ int main(int argc, char *argv[]) {
 				string address = tokens[1];
 				int port = tokens.size() > 2 ? stoi(tokens[2]) : rhs::SERVER_PORT_DEFAULT;
 				cout << "Connecting to " << tokens[1] << ":" << (tokens.size() > 2 ? stoi(tokens[2]) : rhs::SERVER_PORT_DEFAULT) << "...\n";
-				connections->push_back(unique_ptr<Socket>(new Socket(address, port)));
+				connections->push_back(CreateSocket(address, port));
 				cout << "Connected\n";
 			}
 		} else if (cmd == "start") {
@@ -109,7 +108,7 @@ int main(int argc, char *argv[]) {
 	}
 
 	for (auto &channel : *connections)
-		channel->close();
+		channel->Close();
 
 	return 0;
 }

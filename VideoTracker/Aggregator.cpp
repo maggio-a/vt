@@ -115,7 +115,7 @@ void *Aggregator(void *arg) {
 
 	Mat measurement(2, 1, CV_32F);
 	int c = 0;
-	namedWindow(windowName);
+	//namedWindow(windowName);
 	long distMax = long( std::sqrt(ROI[0]*ROI[0] + ROI[1]*ROI[1]) );
 	while (true) {
 		Mat image = Mat::zeros(res[1], res[0], CV_8UC3); // zeros(rows, columns, type): rows -> y, columns -> x
@@ -192,6 +192,7 @@ void *Aggregator(void *arg) {
 		data.erase(remove_if(data.begin(), data.end(), TrackingData::Outdated(3.0f)), data.end());
 
 		imshow(windowName, image);
+		waitKey(5);
 		
 		int keyCode = waitKey(10);
 		if ((keyCode == '\n' || (keyCode & 0xff) == '\n') || (keyCode == '\r' || (keyCode & 0xff) == '\r')) { // Enter key
@@ -203,7 +204,9 @@ void *Aggregator(void *arg) {
 		prevSnapTime = snap.time();
 	}
 
-	destroyWindow(windowName);
+	Mat image = Mat::zeros(res[1], res[0], CV_8UC3);
+	imshow(windowName, image);
+	//destroyWindow(windowName);
 	waitKey(100);
 	return 0;
 }

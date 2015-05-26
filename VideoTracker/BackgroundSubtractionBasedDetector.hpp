@@ -12,7 +12,7 @@ class BackgroundSubtractionBasedDetector : public IDetector {
 public:
 	cv::Mat maskout;
 
-	BackgroundSubtractionBasedDetector(int history, double threshold, int morph_x, int morph_y, float learn=0.02, bool shadows = false)
+	BackgroundSubtractionBasedDetector(int history, double threshold, int morph_x, int morph_y, float learn = 0.02, bool shadows = false)
 			: maskout(), bgs(history, threshold, shadows), mx(morph_x), my(morph_y), lr(learn), mask() {
 	}
 	

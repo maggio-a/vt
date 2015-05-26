@@ -1,22 +1,31 @@
 #ifndef RHS_SERVERSOCKET_HDR
 #define RHS_SERVERSOCKET_HDR
 
-class Socket;
+#include <memory>
+#include "Socket.hpp"
+
+class ServerSocket;
+typedef std::unique_ptr<ServerSocket> serverSocketHandle_t;
+
+serverSocketHandle_t CreateServerSocket(int port, int backlog);
 
 class ServerSocket {
 public:
-	ServerSocket(int port, int backlog);
 	~ServerSocket();
 
-	Socket * accept();
-	void close();
+	socketHandle_t Accept();
+	void Close();
 	
 private:
-	int _port;
-	int _backlog;
-	int _sck;
-	int _err;
-	bool _closed;
+	friend serverSocketHandle_t CreateServerSocket(int port, int backlog);
+	ServerSocket(int port, int backlog);
+
+
+	int port;
+	int backlog;
+	int sck;
+	bool closed;
+	int err;
 };
 
 #endif
