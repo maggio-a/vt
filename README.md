@@ -3,6 +3,7 @@ Dipendenze
 
 * OpenCV (http://opencv.org/)
 * RaspiCam C++ (http://www.uco.es/investiga/grupos/ava/node/40)
+    - La versione contenuta in questo repository corregge un bug che impediva di configurare correttamente l'esposizione (shutter speed) della telecamera.
 
 
 
