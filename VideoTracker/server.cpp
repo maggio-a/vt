@@ -1,3 +1,13 @@
+// =============================================================================
+//
+//  This file is part of the final project source code for the course "Ad hoc
+//  and sensor networks" (Master's degree in Computer Science, University of
+//  Pisa)
+//
+//  Copyright (C) 2015, Andrea Maggiordomo
+//
+// =============================================================================
+
 #include <iostream>
 #include <memory>
 #include <string>
@@ -59,7 +69,7 @@ int main(int argc, char *argv[]) {
 		}
 		float width = std::stof(argv[optind++]);
 		float height = std::stof(argv[optind++]);
-		rhs::performCalibration(width, height);
+		rhs::PerformCalibration(width, height);
 		std::exit(EXIT_SUCCESS);
 	}
 

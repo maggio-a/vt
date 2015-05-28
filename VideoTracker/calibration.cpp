@@ -1,3 +1,13 @@
+// =============================================================================
+//
+//  This file is part of the final project source code for the course "Ad hoc
+//  and sensor networks" (Master's degree in Computer Science, University of
+//  Pisa)
+//
+//  Copyright (C) 2015, Andrea Maggiordomo
+//
+// =============================================================================
+
 #include "calibration.hpp"
 
 #include <iostream>
@@ -26,6 +36,8 @@ static Point2i last(0, 0);
 static vector<Point2i> img_quad; // ground rectangle in image coordinates
 static bool tracing = false;
 
+// Mouse event listener
+// if tracing, reacts to a click by storing the specified image coordinate as a vertex of the ground quad
 static void onMouse(int event, int x, int y, int, void*) {
 	last.x = x, last.y = y;
 	if (tracing && event == EVENT_LBUTTONDOWN) {
@@ -36,7 +48,7 @@ static void onMouse(int event, int x, int y, int, void*) {
 	}
 }
 
-void rhs::performCalibration(float width, float height) {
+void rhs::PerformCalibration(float width, float height) {
 #ifdef __arm__
 	
 	raspicam::RaspiCam_Cv cam;
@@ -81,6 +93,7 @@ void rhs::performCalibration(float width, float height) {
 	int font = FONT_HERSHEY_PLAIN;
 	double font_scale = 0.8;
 	int text_y = params.frameHeight - 10;
+	// check if resizing is required
 	bool resizeCapture = (params.resWidth != params.frameWidth) || (params.resHeight != params.frameHeight);
 	while (true) {
 		cam.grab();
@@ -93,7 +106,7 @@ void rhs::performCalibration(float width, float height) {
 		}
 		
 		circle(image, last, 5, Scalar(255,255,0), 1, CV_AA);
-		if (img_quad.size() > 0) {
+		if (img_quad.size() > 0) { // draw the marked perimeter
 
 			for (size_t i = 0; i < img_quad.size(); ++i)
 				circle(image, img_quad[i], 5, Scalar(255,255,0), 1, CV_AA);
@@ -123,7 +136,7 @@ void rhs::performCalibration(float width, float height) {
 		imshow(windowName, image);
 	}
 
-	// Warning! insertion order determines the computed homography
+	// insertion order matters here
 	vector<Point2f> world_quad; // ground rectangle in world coordinates
 	world_quad.push_back(Point2f(0.0f,0.0f));
 	world_quad.push_back(Point2f(width,0.0f));

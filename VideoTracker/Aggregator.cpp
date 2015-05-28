@@ -1,3 +1,13 @@
+// =============================================================================
+//
+//  This file is part of the final project source code for the course "Ad hoc
+//  and sensor networks" (Master's degree in Computer Science, University of
+//  Pisa)
+//
+//  Copyright (C) 2015, Andrea Maggiordomo
+//
+// =============================================================================
+
 #include <iostream>
 #include <vector>
 #include <sstream>
@@ -17,12 +27,10 @@ using namespace std;
 using namespace cv;
 using namespace rhs;
 
-//#define GROUND_WIDTH 650
-//#define GROUND_HEIGHT 650
 extern float ROI[2];
 extern int res[2];
 
-static int naiveScale(float inMax, float outMax, float val) {
+static int zeroOffsetScale(float inMax, float outMax, float val) {
 	float step = outMax / inMax;
 	return int(val * step);
 
@@ -37,6 +45,9 @@ static Scalar colors[] = {
 	Scalar(190,  75, 130),
 };
 
+// Data associated with each tracked object
+// encapsulates a Kalman filter (MovingObject) and a track (display position history)
+// Position history in the ground plane reference is (at the moment) not recorded 
 struct TrackingData {
 	MovingObject object;
 	Scalar color;
@@ -54,12 +65,12 @@ struct TrackingData {
 	void Draw(Mat &image, int roi_xmax, int roi_ymax) {
 		int font = FONT_HERSHEY_PLAIN;
 		double font_scale = 1.0;
-		vector<Point2i> trace;
+		vector<Point2i> trace; // used to join previous positions with cv::polylines
 		Size screen = image.size();
 		for (auto &ipt : track) {
 			if (ipt.x > 0 && ipt.x < roi_xmax && ipt.y > 0 && ipt.y < roi_ymax) {
-				int px = naiveScale(roi_xmax, screen.width, ipt.x);
-				int py = naiveScale(roi_ymax, screen.height, ipt.y);
+				int px = zeroOffsetScale(roi_xmax, screen.width, ipt.x);
+				int py = zeroOffsetScale(roi_ymax, screen.height, ipt.y);
 				Point2i target = Point2i(px, screen.height-py); // flips the y coordinate
 
 				circle(image, target, 5, color, 1, CV_AA);
@@ -116,7 +127,7 @@ void *Aggregator(void *arg) {
 	Mat measurement(2, 1, CV_32F);
 	int c = 0;
 	//namedWindow(windowName);
-	long distMax = long( std::sqrt(ROI[0]*ROI[0] + ROI[1]*ROI[1]) );
+	long distMax = long( std::sqrt(ROI[0]*ROI[0] + ROI[1]*ROI[1]) ); // used to pad the assignment matrix with fake columns
 	while (true) {
 		Mat image = Mat::zeros(res[1], res[0], CV_8UC3); // zeros(rows, columns, type): rows -> y, columns -> x
 
@@ -142,7 +153,7 @@ void *Aggregator(void *arg) {
 		// Compute matchings
 		if (snap.size() > 0) { // if we detected objects
 			set<size_t> used;
-			if (predictions.size() > 0) { // if already tracking objects, compute the matching 
+			if (predictions.size() > 0) { // if already tracking objects, compute a matching with detected objects
 				vector<size_t> matching = ComputeMatching(predictions, snap.Data(), distMax);
 				for (size_t i = 0; i < matching.size(); ++i) {
 					MovingObject &tracker = data[i].object;
@@ -152,10 +163,11 @@ void *Aggregator(void *arg) {
 						Point2f match = snap[j];
 						measurement.at<float>(0) = match.x;
 						measurement.at<float>(1) = match.y;
-						assert(used.insert(j).second == true);
+						assert(used.insert(j).second == true); // snap[j] matched a prediction
 						tracker.Feedback(measurement);
 					} else {
 						// The predicted position of data[i] did not match any detection
+						// (j >= snap.size() implies that j was a fake column)
 					}
 				}
 			}

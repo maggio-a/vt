@@ -1,3 +1,13 @@
+// =============================================================================
+//
+//  This file is part of the final project source code for the course "Ad hoc
+//  and sensor networks" (Master's degree in Computer Science, University of
+//  Pisa)
+//
+//  Copyright (C) 2015, Andrea Maggiordomo
+//
+// =============================================================================
+
 #include <iostream>
 #include <vector>
 #include <memory>
@@ -14,7 +24,12 @@ using namespace rhs;
 extern void *Receiver(void *arg);
 
 shared_ptr< vector<socketHandle_t> > connections;
-float ROI[] = { 0.0f, 0.0f };
+
+// width and height of the region of interest
+// an object position p is displayed if 0 <= p.x <= ROI[0] and 0 <= p.y <= ROI[1]
+float ROI[] = { 0.0f, 0.0f }; 
+
+// Resolution of the display window
 int res[] = { 300, 300 };
 
 static void split(const string &s, char delimiter, vector<string> &tokens_out) {

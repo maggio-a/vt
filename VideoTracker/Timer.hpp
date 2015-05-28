@@ -1,3 +1,13 @@
+// =============================================================================
+//
+//  This file is part of the final project source code for the course "Ad hoc
+//  and sensor networks" (Master's degree in Computer Science, University of
+//  Pisa)
+//
+//  Copyright (C) 2015, Andrea Maggiordomo
+//
+// =============================================================================
+
 #ifndef RHS_TIMER_HDR
 #define RHS_TIMER_HDR
 

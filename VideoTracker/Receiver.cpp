@@ -1,3 +1,13 @@
+// =============================================================================
+//
+//  This file is part of the final project source code for the course "Ad hoc
+//  and sensor networks" (Master's degree in Computer Science, University of
+//  Pisa)
+//
+//  Copyright (C) 2015, Andrea Maggiordomo
+//
+// =============================================================================
+
 #include <iostream>
 #include <memory>
 
@@ -46,14 +56,14 @@ void *Receiver(void *arg) {
 				alldone = false;
 				socketHandle_t channel = (*connections)[i];
 				try {
-					Message m = channel->Receive(50);
+					Message m = channel->Receive(50); // wait for 50 msec
 					if (m.type == Message::OBJECT_DATA) {
 						//cout << i << ": " << m.payload.substr(0, 10) << endl;
 						queue.Push(Snapshot(m.payload));
 					} else if (m.type == Message::STREAM_STOP) { // this channel has stopped streaming
 						streaming[i] = false; 
 					}
-				} catch (Socket::Timeout) {  }
+				} catch (Socket::Timeout) {  } // skip
 			}
 		}
 		if (alldone) break;

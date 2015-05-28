@@ -1,3 +1,13 @@
+// =============================================================================
+//
+//  This file is part of the final project source code for the course "Ad hoc
+//  and sensor networks" (Master's degree in Computer Science, University of
+//  Pisa)
+//
+//  Copyright (C) 2015, Andrea Maggiordomo
+//
+// =============================================================================
+
 #ifndef RHS_CALIBRATION_HDR
 #define RHS_CALIBRATION_HDR
 
@@ -5,12 +15,24 @@
 #include <opencv2/opencv.hpp>
 
 namespace rhs {
-	void performCalibration(float width, float height);
+	// function performCalibration
+	// Allows the user to compute a homography from points of the image plane to points lying on the
+	// ground plane. The user draws a quad by selecting the vertices whose coordinates on the ground
+	// plane are (0,0), (width,0), (width,height), (0,height), and a perspective transformation is then computed.
+	// Opens a window with the camera view, the key commands are:
+	//    SPACE       toggles marking mode
+	//    LEFT CLICK  to mark a vertex if marking mode is active
+	//    r           removes last mark
+	//    ENTER       returns, computing and saving the homography if 4 vertices are marked
+	void PerformCalibration(float width, float height);
+
+
 	const std::string PathToCalibrationData = "homography.yaml";
 	const std::string PerspectiveTransformationName = "perspectiveTransformMatrix";
 	const std::string GroundWidthParamName  = "groundWidth";
 	const std::string GroundHeightParamName = "groundHeight";
 
+	// Path to the file storing camera parameters
 	const std::string CameraParamsPath = "../params/camera_params.yaml";
 
 	const static int defaultResWidth =      320;
@@ -31,6 +53,27 @@ namespace rhs {
 	const static int defaultBgsMorphY = 3;
 	const static float defaultBgsLearningRate = 0.02f;
 
+	// Camera parameters for the raspberry camera module, can be read from the file specified by rhs::CameraParamsPath
+	// SENSOR
+	//     rx    (integer): width of the captured image
+	//     ry    (integer): height of the captured image
+	//     fx    (integer): width of the used (scaled) image
+	//     fy    (integer): height of the used (scaled) image
+	//         NOTE: if rx != fx or ry != fy then the server works with a resized copy of the captured image 
+	//     ss    (integer): shutter speed (range 0-100) from 0 to 33 msec
+	//     br    (integer): brightness (range 0-100)
+	//     sa    (integer): saturation (range 0-100)
+	//     co    (integer): contrast (range 0-100)
+	//     gain  (integer): gain (range 0-100)
+	//     wb_r  (integer): white balance, red channel (not working as of now, range 0-100)
+	//     wb_b  (integer): white balance, blue channel (not working as of now, range 0-100)
+	//
+	// BACKGROUND SUBTRACTION (see BackgroundSubtractionBasedDetector)
+	//    bgsHistory      (integer)
+	//    bgsThreshold    (float)
+	//    bgsMorphX       (integer)
+	//    bgsMorphY       (integer)
+	//    bgsLearningRate (float) 
 	struct CameraParams {
 		int resWidth;
 		int resHeight;
@@ -75,7 +118,7 @@ namespace rhs {
 				if (fs["bgsThreshold"].type() == cv::FileNode::FLOAT) fs["bgsThreshold"] >> bgsThreshold;
 				if (fs["bgsMorphX"].type() == cv::FileNode::INT) fs["bgsMorphX"] >> bgsMorphX;
 				if (fs["bgsMorphY"].type() == cv::FileNode::INT) fs["bgsMorphY"] >> bgsMorphY;
-				if (fs["bgsLearningRate"].type() == cv::FileNode::INT) fs["bgsLearningRate"] >> bgsLearningRate;
+				if (fs["bgsLearningRate"].type() == cv::FileNode::FLOAT) fs["bgsLearningRate"] >> bgsLearningRate;
 			} else {
 				std::cout << "CameraParams: using defaults\n";
 			}

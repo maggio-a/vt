@@ -1,3 +1,13 @@
+// =============================================================================
+//
+//  This file is part of the final project source code for the course "Ad hoc
+//  and sensor networks" (Master's degree in Computer Science, University of
+//  Pisa)
+//
+//  Copyright (C) 2015, Andrea Maggiordomo
+//
+// =============================================================================
+
 #include <iostream>
 #include <string>
 #include <sstream>
@@ -82,7 +92,7 @@ void *tracker2(void *arg) {
 	float groundWidth, groundHeight;
 	FileStorage fs(rhs::PathToCalibrationData, FileStorage::READ);
 	if (!fs.isOpened() || fs[rhs::PerspectiveTransformationName].type() == FileNode::NONE) {
-		//disaster
+		// the homography from image to ground plane is unavailable
 		cerr << "WARNING: Unable to read calibration data from " << rhs::PathToCalibrationData
 				  << ", using plain image coordinates" << endl;
 		img2world = Mat(3, 3, CV_64F);
@@ -113,6 +123,7 @@ void *tracker2(void *arg) {
 
 	Mat capture;
 	Mat rsz;
+	// check if resizing is required
 	bool resizeCapture = (params.resWidth != params.frameWidth) || (params.resHeight != params.frameHeight);
 	vector< vector<Point2i> > contours;
 
@@ -122,6 +133,7 @@ void *tracker2(void *arg) {
 	int c=1;
 	tlocal.Restart();
 	while (tracking) {
+		// capture
 		cam.grab();
 		timestamp = live.TimeElapsed();
 		cam.retrieve(capture);
@@ -133,6 +145,7 @@ void *tracker2(void *arg) {
 			detector.DetectObjects(capture, contours);
 		}
 
+		// create the snapshot
 		Snapshot snap(timestamp);
 		for (size_t j = 0; j < contours.size(); ++j) {
 			Rect b = boundingRect(contours[j]);
@@ -141,6 +154,7 @@ void *tracker2(void *arg) {
 			snap.AddObject(groundPoint);
 		}
 
+		// send it to the client
 		Message msg(Message::OBJECT_DATA, snap.str());
 		try {
 			channel->Send(msg);

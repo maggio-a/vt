@@ -1,9 +1,7 @@
-
 /**
- * Code brutally adapted from the C implementation by Mattias Andrée
- * available at https://github.com/maandree/hungarian-algorithm-n3
- * (basically just changed malloc/free to new/delete and added the interface method)
- *
+ * Code adapted from a C implementation by Mattias Andrée available at
+ * https://github.com/maandree/hungarian-algorithm-n3
+ * (basically just changed malloc/free to new/delete and added the interface ComputeMatching)
  */
 #include "hungarian.hpp"
 

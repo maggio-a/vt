@@ -1,3 +1,13 @@
+// =============================================================================
+//
+//  This file is part of the final project source code for the course "Ad hoc
+//  and sensor networks" (Master's degree in Computer Science, University of
+//  Pisa)
+//
+//  Copyright (C) 2015, Andrea Maggiordomo
+//
+// =============================================================================
+
 #ifndef RHS_SNAPSHOT_HDR
 #define RHS_SNAPSHOT_HDR
 
@@ -19,7 +29,7 @@ public:
 	//   POINT = FLOAT_VAL:FLOAT_VAL
 	// for example: 0.3#1.5:1.5#3.0:2.0 is the string representation of a snapshot with timestamp 0.3 and a list
 	// of two detected objects at coordinates (1.5, 1.5) and (3.0, 2.0)
-	// WARNING/FIXME: The validity of the string is not checked
+	// WARNING/FIXME: Assumes the string is well formed
 	Snapshot(std::string description);
 
 	~Snapshot();
