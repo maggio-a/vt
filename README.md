@@ -9,7 +9,7 @@ La versione di RaspiCam C++ contenuta in questo repository corregge un bug che i
 COMPILAZIONE
 ============
 
-Per compilare OpenCV e RaspiCam C++ si fa riferimento alla relativa documentazione. Per compilare il progetto su raspbian:
+Per compilare OpenCV e RaspiCam C++ si fa riferimento alla relativa documentazione. Per compilare il progetto su Raspbian:
 
     cd VideoTracker
     mkdir build
@@ -17,7 +17,7 @@ Per compilare OpenCV e RaspiCam C++ si fa riferimento alla relativa documentazio
     cmake ..
     make
 
-È possibile disabilitare le dipendenze da RaspiCam C++ e utilizzare un oggetto `cv::VideoCapture` come sorgente video passando a cmake lo switch `-DRPI=OFF`:
+È possibile disabilitare le dipendenze da RaspiCam C++ e utilizzare un oggetto `cv::VideoCapture` come sorgente video (utile se si usa ad esempio una webcam USB) passando a cmake lo switch `-DRPI=OFF`:
 
     cd VideoTracker
     mkdir build
