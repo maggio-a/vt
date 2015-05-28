@@ -1,7 +1,10 @@
-Compilazione
-============
+Dipendenze
+==========
 
-Test
+* OpenCV (http://opencv.org/)
+* RaspiCam C++ (http://www.uco.es/investiga/grupos/ava/node/40)
+
+
 
 # README #
 
