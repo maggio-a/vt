@@ -1,3 +1,10 @@
+VideoTracker
+============
+
+Progetto finale del corso di Reti ad hoc e di sensori, Corso di Laurea Magistrale in Informatica, Università di Pisa.
+
+Anno accademico 2014-2015
+
 Dipendenze
 ==========
 
@@ -17,7 +24,7 @@ Per compilare OpenCV e RaspiCam C++ si fa riferimento alla relativa documentazio
     cmake ..
     make
 
-È possibile disabilitare le dipendenze da RaspiCam C++ e utilizzare un oggetto `cv::VideoCapture` come sorgente video (utile se si usa ad esempio una webcam USB) passando a cmake lo switch `-DRPI=OFF`:
+Se si dispone di una webcam USB è possibile disabilitare le dipendenze da RaspiCam C++ passando a cmake lo switch `-DRPI=OFF`. In questo caso come sorgente video viene usato un oggetto `cv::VideoCapture`:
 
     cd VideoTracker
     mkdir build
@@ -25,8 +32,8 @@ Per compilare OpenCV e RaspiCam C++ si fa riferimento alla relativa documentazio
     cmake -DRPI=OFF ..
     make
 
-Autore
-======
+Contatti
+========
 
 Andrea Maggiordomo, `mggndr89[at]gmail.com`
 
