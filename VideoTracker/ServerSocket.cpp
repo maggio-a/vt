@@ -40,7 +40,7 @@ ServerSocket::ServerSocket(int p, int bl) : port(p), backlog(bl), sck(-1), close
 	server_info.sin_family = AF_INET;
 	server_info.sin_port = port;
 	server_info.sin_addr.s_addr = htonl(INADDR_ANY);
-	if(bind(sck, (struct sockaddr *) &server_info, sizeof(server_info))) {
+	if(::bind(sck, (struct sockaddr *) &server_info, sizeof(server_info))) {
 		perror("bind");
 		throw err = errno;
 	}
