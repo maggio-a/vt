@@ -16,7 +16,7 @@ La versione di RaspiCam C++ contenuta in questo repository corregge un bug che i
 Compilazione
 ============
 
-Per compilare OpenCV e RaspiCam C++ si fa riferimento alla relativa documentazione. Per compilare il progetto su Raspbian:
+Per compilare OpenCV e RaspiCam C++ si fa riferimento alla relativa documentazione. Per compilare il progetto su Raspbian usando cmake:
 
     cd VideoTracker
     mkdir build
