@@ -1,4 +1,4 @@
-DIPENDENZE
+Dipendenze
 ==========
 
 * OpenCV (http://opencv.org/)
@@ -6,7 +6,7 @@ DIPENDENZE
 
 La versione di RaspiCam C++ contenuta in questo repository corregge un bug che impediva di configurare correttamente l'esposizione (shutter speed) della telecamera.
 
-COMPILAZIONE
+Compilazione
 ============
 
 Per compilare OpenCV e RaspiCam C++ si fa riferimento alla relativa documentazione. Per compilare il progetto su Raspbian:
@@ -25,7 +25,10 @@ Per compilare OpenCV e RaspiCam C++ si fa riferimento alla relativa documentazio
     cmake -DRPI=OFF ..
     make
 
+Autore
+======
 
+Andrea Maggiordomo, `mggndr89[at]gmail.com`
 
 # README #
 
