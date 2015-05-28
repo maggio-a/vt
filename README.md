@@ -1,9 +1,29 @@
-Dipendenze
+DIPENDENZE
 ==========
 
 * OpenCV (http://opencv.org/)
 * RaspiCam C++ (http://www.uco.es/investiga/grupos/ava/node/40)
-    - La versione contenuta in questo repository corregge un bug che impediva di configurare correttamente l'esposizione (shutter speed) della telecamera.
+
+La versione di RaspiCam C++ contenuta in questo repository corregge un bug che impediva di configurare correttamente l'esposizione (shutter speed) della telecamera.
+
+COMPILAZIONE
+============
+
+Per compilare OpenCV e RaspiCam C++ si fa riferimento alla relativa documentazione. Per compilare il progetto su raspbian:
+
+    cd VideoTracker
+    mkdir build
+    cd build
+    cmake ..
+    make
+
+È possibile disabilitare le dipendenze da RaspiCam C++ e utilizzare un oggetto `cv::VideoCapture` come sorgente video passando a cmake lo switch `-DRPI=OFF`:
+
+    cd VideoTracker
+    mkdir build
+    cd build
+    cmake -DRPI=OFF ..
+    make
 
 
 
