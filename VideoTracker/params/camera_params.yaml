@@ -13,6 +13,6 @@ wb_b: -1
 
 bgsHistory: 100
 bgsThreshold: 16.0
-bgsMorphX: 3
-bgsMorphY: 3
+bgsMorphX: 5
+bgsMorphY: 5
 bgsLearningRate: 0.01
