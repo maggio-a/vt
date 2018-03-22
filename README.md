@@ -5,6 +5,8 @@ Progetto finale del corso di Reti ad hoc e di sensori, Corso di Laurea Magistral
 
 Anno accademico 2014-2015
 
+[Writeup](VideoTracker/TODO.txt)
+
 Dipendenze
 ==========
 
@@ -32,7 +34,3 @@ Se si dispone di una webcam USB è possibile disabilitare le dipendenze da Raspi
     cmake -DRPI=OFF ..
     make
 
-Contatti
-========
-
-Andrea Maggiordomo, `mggndr89[at]gmail.com`
